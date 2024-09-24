@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('create-task');
 });
 
 
@@ -34,17 +34,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::group(['middleware' => ['role:Admin']], function () {
-        Route::resource('projects', TaskController::class);
-    });
-    Route::group(['middleware' => ['role:Manager']], function () {
-        // Routes for Admin
-    });
-    Route::group(['middleware' => ['role:Team Member']], function () {
-        // Routes for Admin
-    });
-});
+// Route::middleware('auth')->group(function () {
+//     Route::group(['middleware' => ['role:Admin']], function () {
+//         Route::resource('projects', TaskController::class);
+//     });
+//     Route::group(['middleware' => ['role:Manager']], function () {
+//         // Routes for Admin
+//     });
+//     Route::group(['middleware' => ['role:Team Member']], function () {
+//         // Routes for Admin
+//     });
+// });
 
 
 
