@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -18,31 +19,31 @@ class ProjectController extends Controller
     }
 
 
-    /**
-     * عرض المهام بناءً على دور المستخدم
-     */
     public function index(Request $request)
     {
-        // التحقق من دور المستخدم وتحميل البيانات المناسبة
+        $projects = [];
+
         if ($this->user->hasRole('Admin') || $this->user->hasRole('Manager')) {
-            $tasks = Task::all();
+            $projects = Project::all();
+
+        } elseif ($this->user->hasRole('Team Member')) {
+            //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
+
+            $projects = Project::with('tasks.users')->whereHas('tasks.users', function ($query) {
+                $query->where('user_id', $this->user->id);
+            })->get();
+
+
         }
 
-        return view('dashboard', compact('tasks', 'user'));
+        return view('projects.index', compact('projects'));
+
+
     }
 
-    /**
-     * إنشاء مهمة جديدة من قبل المدير
-     */
+
     public function create()
     {
-        $this->authorize('create', Task::class);
 
-        if ($this->user->role === 'manger') {
-            $users = User::all();
-            return view('tasks.create', compact('users'));
-        }
-
-        return redirect()->route('404');
     }
 }
