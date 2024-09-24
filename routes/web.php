@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Admin']], function () {
-
+        Route::resource('projects', TaskController::class);
     });
     Route::group(['middleware' => ['role:Manager']], function () {
         // Routes for Admin
