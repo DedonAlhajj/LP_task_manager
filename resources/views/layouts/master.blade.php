@@ -13,6 +13,7 @@
     <link rel="stylesheet"type="text/css" href="{{asset('assets/css/nouislider.min.css')}}"/>
     <link rel="stylesheet" href="{{asset('assets/css/swiper-bundle.min.css')}}">
     <link rel="stylesheet"type="text/css" href="{{asset('assets/css/styles.css')}}"/>
+    @stack('style')
     <!-- manifest json -->
     <link rel="manifest" href="_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <!-- Favicon and Touch Icons  -->
@@ -40,6 +41,8 @@
     <script type="text/javascript" src="{{asset('assets/js/main.js')}}"></script>
     <script type="text/javascript" src="{{asset('assets/js/multiple-modal.js')}}"></script>
 
+
+    @stack('js')
 
 
 </body>

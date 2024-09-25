@@ -76,7 +76,7 @@ class ProjectController extends Controller
         $isAssigned = $project->users()->where('user_id', $user->id)->exists();
 
         if ($isCreator || $isAssigned) {
-            return view('projects.show', compact('project'));
+            return view('project-details', compact('project'));
         } else {
             return redirect()->route('404');
         }

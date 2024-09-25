@@ -1,6 +1,6 @@
 <div class="preload preload-container">
   <div class="logo-img">
-      <img src="images/logo/logo-2.png" alt="logo">
+      <img src="{{asset('images/logo/logo-2.png')}}" alt="logo">
   </div>
   <div class="spinner-circle lg success">
       <span class="spinner-circle1 spinner-child"></span>

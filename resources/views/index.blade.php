@@ -74,7 +74,7 @@
                             <div class="swiper-wrapper">
                                 @foreach ($projects as $project)
                                 <div class="swiper-slide">
-                                    <a href="project-details.html" class="box-recent-project">
+                                    <a href="{{route('projects.show', $project->id)}}" class="box-recent-project">
                                         <div class="top">
                                             <div class="d-flex justify-content-between align-items-center gap-10">
                                                 <div class="box-icon w-34">
@@ -96,41 +96,36 @@
                                             </ul>
                                         </div>
                                         <div class="mt-14 box-image">
-                                            <img src="images/project/img1.jpg" alt="img">
+                                            <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt=""> 
                                         </div>
-                                        @forelse ($project->users as $user)
                                         <div class="mt-14 bottom d-flex align-items-center">
+                                            @if ($project->user->count()>0)
                                             <ul class="list-stacked">
+                                                @foreach ($project->users as $user)
                                                 <li class="avt-list">
                                                     <div class="avatar avt-27 round">
+                                                        
                                                         <img src="images/avt/avt3.jpg" alt="img">
                                                     </div>
                                                 </li>
-                                                <li class="avt-list">
-                                                    <div class="avatar avt-27 round">
-                                                        <img src="images/avt/avt4.jpg" alt="img">
-                                                    </div>
-                                                </li>
-                                                <li class="avt-list">
-                                                    <div class="avatar avt-27 round">
-                                                        <img src="images/avt/avt5.jpg" alt="img">
-                                                    </div>
-                                                </li>
+                                                @endforeach
                                             </ul>
+                                            @else
+                                            <h2 class="text-black-5">No Member</h2>
+
+                                            @endif
                                             <div class="box-progress">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="text-caption-2 text-black-5">Progress</span>
-                                                    <span class="fw-6 text-caption-2">78%</span>
+                                                    <span class="text-caption-2 text-black-5">@if($project->status == 'Completed') Completed @elseif ($project->status == 'InProgress') Progress @else New @endif</span>
+                                                    <span class="fw-6 text-caption-2">@if($project->status == 'Completed') 100 @else 0 @endif</span>
                                                 </div>
                                                 <div class="progress h-5">
-                                                    <div class="progress-bar" role="progressbar" style="width: 78%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-bar" role="progressbar" style="width: @if($project->status == 'Completed') 100% @endif" aria-valuenow="25" aria-valuemin="50" aria-valuemax=" 100%"></div>
                                                 </div>
                                                 
                                             </div>
                                         </div>
-                                        @empty
-                                            <h2>No User assigned to this project</h2>
-                                        @endforelse
+                                      
                                      
                                     </a>
                                 </div>
@@ -198,7 +193,7 @@
                 </div> --}}
             </div>
         </div>
-        
+
 
     </div>
 
