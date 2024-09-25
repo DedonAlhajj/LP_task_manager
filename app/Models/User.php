@@ -45,6 +45,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function tasksCreated() {
+        return $this->hasMany(Project::class, 'created_by');
+    }
+
     public function projects(){
         return $this->belongsToMany(Project::class,'project_users');
     }

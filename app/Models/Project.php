@@ -9,8 +9,12 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable=['name','details','start_date','end_date','status'];
+    protected $fillable=['name','details','created_by','start_date','end_date','status'];
 
+
+    public function user() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
     public function tasks(): HasMany
     {
