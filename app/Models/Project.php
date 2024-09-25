@@ -9,9 +9,21 @@ class Project extends Model
 {
     use HasFactory;
 
-    // في موديل Project
-    public function tasks() {
+    protected $fillable=['name','details','start_date','end_date','status'];
+   
+   
+    public function tasks(): HasMany
+    {
         return $this->hasMany(Task::class);
+    }
+    
+    public function users(){
+        return $this->belongsToMany(User::class);
+    }
+    
+    public function attach_comments(): MorphMany
+    {
+        return $this->morphMany(Comment_Attach::class, 'comment_attachable');
     }
 
 }

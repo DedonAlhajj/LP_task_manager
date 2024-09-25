@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -30,6 +31,15 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            // تعيين دور عشوائي للمستخدم من الأدوار الموجودة في قاعدة البيانات
+            $role = \Spatie\Permission\Models\Role::inRandomOrder()->first();
+            $user->assignRole($role);
+        });
     }
 
     /**

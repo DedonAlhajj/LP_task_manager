@@ -45,16 +45,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
-    public function tasks()
-    {
-        return $this->belongsToMany(Task::class, 'task_user');
+    public function projects(){
+        return $this->belongsToMany(Project::class);
     }
 
-    // العلاقة مع المهام التي قام بإنشائها: المستخدم يمكن أن ينشئ عدة مهام
-    public function createdTasks()
-    {
-        return $this->hasMany(Task::class, 'created_by');
+
+    public function tasks(){
+        return $this->belongsToMany(Task::class);
     }
 
 }

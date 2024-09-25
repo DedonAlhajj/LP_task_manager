@@ -23,19 +23,15 @@ class ProjectController extends Controller
     {
         $projects = [];
 
-        if ($this->user->hasRole('Admin') || $this->user->hasRole('Manager')) {
+        if (Auth::user()->id->hasRole('Admin') || Auth::user()->id->hasRole('Manager')) {
             $projects = Project::all();
 
-        } elseif ($this->user->hasRole('Team Member')) {
+        } elseif (Auth::user()->id->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
-
-            $projects = Project::with('tasks.users')->whereHas('tasks.users', function ($query) {
-                $query->where('user_id', $this->user->id);
-            })->get();
-
+            $projects = $this->user->projects;
 
         }
-
+        dd($projects);
         return view('projects.index', compact('projects'));
 
 

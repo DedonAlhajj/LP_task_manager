@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ManagerDashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TeamMemberDashboardController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Admin']], function () {
-        Route::resource('projects', TaskController::class);
+       // Route::resource('projects', TaskController::class);
     });
     Route::group(['middleware' => ['role:Manager']], function () {
         // Routes for Admin
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Team Member']], function () {
         // Routes for Admin
     });
+    Route::resource('projects', ProjectController::class);
 });
 
 
