@@ -35,7 +35,7 @@ class DashboradController extends Controller
         }elseif ( $u->hasRole ('Manager')){
 
             $projects = $u->tasksCreated;
-            // dd($projects);
+         
         }
         elseif (Auth::user()->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
