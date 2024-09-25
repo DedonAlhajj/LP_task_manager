@@ -74,10 +74,14 @@ class ProjectController extends Controller
 
         // التحقق إذا كان المستخدم هو الذي أنشأ المشروع أو أنه من المستخدمين المرتبطين بالمشروع
         $isCreator = $project->created_by == $user->id;
-        $isAssigned = $project->users()->where('user_id', $user->id)->exists();
+        $isAssigned = $project->users()
+            ->where('user_id', $user->id)
+            ->wherePivot('status', 'approved')
+            ->exists();
 
         if ($isCreator || $isAssigned) {
-            return view('project-details', compact('project'));
+            $approvedUsers = $project->users()->wherePivot('status', 'approved')->get();
+            return view('project-details', compact('project','approvedUsers'));
         } else {
             return redirect()->route('404');
         }
