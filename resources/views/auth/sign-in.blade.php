@@ -2,14 +2,17 @@
 @extends('layouts.AuthLayout')
 @section('title', 'Sign In')
 @section('content')
+
     <div class="app-content style-3 pb-32 signIn-area">
+        
         <div class="tf-container">
+            <x-dashboard.alert />
             <form class="mt-24" action="{{route('login')}}" method="POST">
                 @csrf   
                 <p class="body-6 text-black-5">Give creadential to sign in your account</p>
                 <fieldset class="input-icon mt-20">
                     <span class="icon icon-mail"></span>
-                    <input type="text" placeholder="Type your email" name="email" class="form-control">
+                    <input type="text" placeholder="Type your email" name="email" class="form-control" value="{{ old('email') }}">
                 </fieldset>
                 <fieldset class="mt-16 input-icon">
                     <div class="box-view-hide">

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ManagerDashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamMemberDashboardController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('create-task');
-});
+    return view('index');
+})->name('index');
 
 
 Route::get('/dashboard', function () {
@@ -34,17 +35,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::middleware('auth')->group(function () {
-//     Route::group(['middleware' => ['role:Admin']], function () {
-//         Route::resource('projects', TaskController::class);
-//     });
-//     Route::group(['middleware' => ['role:Manager']], function () {
-//         // Routes for Admin
-//     });
-//     Route::group(['middleware' => ['role:Team Member']], function () {
-//         // Routes for Admin
-//     });
-// });
+Route::middleware('auth')->group(function () {
+
+    Route::group(['middleware' => ['role:Admin']], function () {
+        Route::resource('projects', TaskController::class);
+    });
+    Route::group(['middleware' => ['role:Manager']], function () {
+        // Routes for Admin
+    });
+    Route::group(['middleware' => ['role:Team Member']], function () {
+        // Routes for Admin
+    });
+});
 
 
 

@@ -9,10 +9,19 @@ class Task extends Model
 {
     use HasFactory;
 
-    public function project()
+
+    protected $fillable=['name','project_id','task_type',
+    'description','end_time','status','user_id'];
+
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
+    public function attach_comments(): MorphMany
+    {
+        return $this->morphMany(Comment_Attach::class, 'comment_attachable');
+    }
+  
 
     public function users() {
         return $this->belongsToMany(User::class, 'task_user');
@@ -26,7 +35,8 @@ class Task extends Model
         return $this->belongsTo(Priority::class);
     }
 
-    public function creator() {
+    public function creator() 
+    {
         return $this->belongsTo(User::class, 'created_by');
     }
 
