@@ -11,11 +11,11 @@ class Task extends Model
     protected $fillable=['name','project_id',
     'description','end_date','start_date','status'];
 
-    public function project(): BelongsTo
+    public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class , 'project_id');
     }
-    public function attach_comments(): MorphMany
+    public function attach_comments()
     {
         return $this->morphMany(Comment_Attach::class, 'comment_attachable');
     }

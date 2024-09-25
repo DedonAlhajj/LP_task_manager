@@ -2,23 +2,35 @@
 @extends('layouts.AuthLayout')
 @section('title', 'Create an Account')
 @section('content')
+    
     <div class="app-content style-3 pb-32 signUp-area">
         <div class="tf-container">
+            <x-dashboard.alert />
             <form class="mt-24" action="{{route('register')}}" method="POST">
                 @csrf
                 <p class="body-6 text-black-5">Give creadential to sign in your account</p>
                 <fieldset class="input-icon mt-20">
                     <span class="icon icon-user"></span>
-                    <input type="text" placeholder="Type your username" name="name" class="form-control" required>
+                    <input type="text" placeholder="Type your username" name="name" class="form-control" required value="{{ old('name') }}">
                 </fieldset>
                 <fieldset class="input-icon mt-16">
                     <span class="icon icon-mail"></span>
-                    <input type="text" placeholder="Type your email" name="email" class="form-control" required>
+                    <input type="text" placeholder="Type your email" name="email" class="form-control" required value="{{ old('email') }}">
                 </fieldset>
                 <fieldset class="mt-16 input-icon">
                     <div class="box-view-hide">
                         <span class="icon icon-lock"></span>
                         <input type="password" placeholder="Type your password" name="password" class="form-control password-field" required>
+                        <div class="show-pass">
+                            <span class="icon-pass icon-view"></span>
+                            <span class="icon-pass icon-hide"></span>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="mt-16 input-icon">
+                    <div class="box-view-hide">
+                        <span class="icon icon-lock"></span>
+                        <input type="password" placeholder="Re Type your password" name="password_confirmation" class="form-control password-field" required>
                         <div class="show-pass">
                             <span class="icon-pass icon-view"></span>
                             <span class="icon-pass icon-hide"></span>

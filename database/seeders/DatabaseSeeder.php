@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         Checklist::factory()->count(10)->create();
         Comment_Attach::factory()->count(10)->create();
 
+
     }
 }

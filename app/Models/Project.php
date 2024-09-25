@@ -16,7 +16,7 @@ class Project extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function tasks(): HasMany
+    public function tasks()
     {
         return $this->hasMany(Task::class);
     }
@@ -25,9 +25,9 @@ class Project extends Model
         return $this->belongsToMany(User::class,'project_users');
     }
 
-    public function attach_comments(): MorphMany
+    public function attach_comments()
     {
-        return $this->morphMany(Comment_Attach::class, 'comment_attachable');
+        return $this->morphMany(Comment_Attach::class, 'comm_attach_able');
     }
 
 }

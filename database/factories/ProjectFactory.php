@@ -28,6 +28,7 @@ class ProjectFactory extends Factory
                 'start_date'=>fake()->date(),
                 'end_date'=>fake()->date(),
                 'status'=>fake()->randomElement(['InProgress', 'New','Completed']),
+                'created_by'=>User::all()->random()->id,
             
         ];
     }

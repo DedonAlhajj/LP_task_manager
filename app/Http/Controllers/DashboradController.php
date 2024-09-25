@@ -24,15 +24,18 @@ class DashboradController extends Controller
     }
     public function index()
     {
+      
         $projects = [];
         $u = Auth::user();
-        if (Auth::user()->hasRole('Admin')) {
+        // dd($u->hasRole ('Manager'));
+        if ( $u->hasRole('Admin')) {
             $projects = Project::all();
+     
 
-        }elseif (Auth::user()->hasRole('Manager')){
+        }elseif ( $u->hasRole ('Manager')){
 
             $projects = $u->tasksCreated;
-            dd($projects);
+            // dd($projects);
         }
         elseif (Auth::user()->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
