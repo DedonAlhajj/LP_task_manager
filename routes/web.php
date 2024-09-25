@@ -50,6 +50,13 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Team Member']], function () {
         // Routes for Admin
     });
+    // لعرض المشاريع المرتبطة بالمستخدم المصادق
+    Route::get('/my-projects', [ProjectController::class, 'myProjects'])->name('projects.myProjects');
+
+// لتحديث حالة المشروع إلى approved
+    Route::patch('/projects/{id}/update-status', [ProjectController::class, 'acceptInvitations'])->name('projects.updateStatus');
+
+    Route::post('/projects/{id}/add-user', [ProjectController::class, 'addUser'])->name('projects.addUser');
     Route::resource('projects', ProjectController::class);
 });
 
