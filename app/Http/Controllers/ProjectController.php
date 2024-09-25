@@ -68,7 +68,6 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::findOrFail($id);
-        $users = $project->users;
 
         // الحصول على المستخدم الحالي
         $user = auth()->user();
@@ -78,7 +77,7 @@ class ProjectController extends Controller
         $isAssigned = $project->users()->where('user_id', $user->id)->exists();
 
         if ($isCreator || $isAssigned) {
-            return view('projects.show', compact('project','users'));
+            return view('projects.show', compact('project'));
         } else {
             return redirect()->route('404');
         }
