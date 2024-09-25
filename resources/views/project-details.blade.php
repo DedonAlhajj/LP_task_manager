@@ -4,16 +4,16 @@
 @section('content')
     @include('partials.header')
 
+    
     <div class="app-content style-3 pb-32">
         <div class="tf-container">
             <div class="mt-24">
                 <div class="banner-project">
-                    <img src="images/project/img1.jpg" alt="img">
+                    <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt=""> 
                 </div>
                 <h5 class="mt-20 text-black-2">Description</h5>
                 <div class="box-description-task">
-                    <p class="mt-12 body-2 text-black-4">Amet minim mollit non deserunt ullamco est sit aliqua dolor amet sint. Velit officia consequat duis non deserunt enim velit mollit. Do Exercitation veniam min...<a href="javascript:void(0);" class="text-primary">See Details</a></p>
-
+                    <p class="mt-12 body-2 text-black-4">{{$project->details}}<a href="javascript:void(0);" class="text-primary">See Details</a></p>
                 </div>
                 <ul class="mt-24">
                     <li class="list-desc-project">
@@ -29,46 +29,15 @@
                         </div>
                         <div class="box-right">
                             <ul class="list-stacked">
+                                @if(count($project->users)>0)
                                 <li class="avt-list">
                                     <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt5.jpg" alt="img">
+                                        <img src="{{asset('images/avt/avt5.jpg') }}" alt="img">
                                     </div>
                                 </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt9.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt10.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt3.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt11.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt4.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt12.jpg" alt="img">
-                                    </div>
-                                </li>
-                                <li class="avt-list">
-                                    <div class="avatar avt-24 round">
-                                        <img src="images/avt/avt8.jpg" alt="img">
-                                    </div>
-                                </li>
+                                @else
+                                <span>No Team</span>
+                                @endif
                                 <li class="add-member">
                                     <a href="invite-colleagues.html" class="icon icon-add2"></a>
                                 </li>
@@ -89,9 +58,10 @@
                         </div>
                         <div class="box-right d-flex align-items-center gap-6">
                             <div class="avatar avt-24 round">
-                                <img src="images/avt/avt10.jpg" alt="img">
+                                <img src=" @if($project->user->image) {{asset('storage/users/'. $project->user->image)}} @else {{asset('images/avt/avt10.jpg')}} @endif" alt=""> 
+
                             </div>
-                            <p class="text-black-2 body-3 fw-5">Rafi Islam Apon (you)</p>
+                            <p class="text-black-2 body-3 fw-5">{{$project->user->name}}</p>
                         </div>
 
                     </li>
@@ -106,7 +76,7 @@
                             </div>
                             <span class="h9 text-black-3">Status</span>
                         </div>
-                        <div class="box-right"><a href="#" class="task-status type-1">To Do</a></div>
+                        <div class="box-right"><a href="#" class="task-status type-1">{{$project->status}}</a></div>
 
                     </li>
                     <li class="mt-20 list-desc-project">
@@ -123,7 +93,7 @@
                         </div>
                         <div class="box-right dropdown">
                             <div class="dropdown-backdrop dropdown-due-date" data-bs-toggle="dropdown" aria-haspopup="true">
-                                <span class="body-4 fw-5 valDate-due"> Dec 27, 2024 </span>    
+                                <span class="body-4 fw-5 valDate-due">{{$project->end_date}} </span>    
                                 <span class="icon-edit fs-12 text-primary"></span>
                             </div>
                             <div class="dropdown-menu dropdown-calendar">
@@ -146,46 +116,59 @@
                             <span class="h9 text-black-3">Attachment</span>
                         </div>
                         <div class="box-right uploadfile">
-                            <div class="file-name"><span class="icon-upfile"></span> Refereences.pdf</div>
+                            @if($project->attachment)
+                            @foreach ($project->attachment as $attachment)
+                            <div class="file-name"><span class="icon-upfile"></span> {{$attachment}}</div>
+                            @endforeach
+                            @endif
+                            
                             <input type="file" class="add-file">
                         </div>
 
                     </li>
                 </ul>
-                <a href="add-tag.html" class="tf-btn mt-24 disable">Add Custom Section</a>
+                {{-- <a href="add-tag.html" class="tf-btn mt-24 disable">Add Custom Section</a> --}}
                 
             </div>
             <div class="mt-28">
-                <h5 class="text-black-2">Sub Task (3)</h5>
+                <h5 class="text-black-2">Sub Task ({{$project->tasks->count()}})</h5>
+                
                 <ul class="mt-20">
-                    <li class="list-task-item">
-                        <input type="checkbox" id="task1" class="radio-check success" checked>
-                        <label for="task1" class="content-task">
-                            <div class="title h8 fw-7 text-black-2">Define Problem with Client</div>
+                    @forelse ($project->tasks as $task)
+                    <a href="{{route('index', $task->id)}}" class="btn-edit-task">
+                    <li class="list-task-item mb-2">
+                        
+                        <input type="checkbox" id="task_{{$task->id}}" class="radio-check success" checked>
+                        <label for="task_{{$task->id}}" class="content-task">
+                            <div class="title h8 fw-7 text-black-2">{{$task->name}}</div>
                         </label>
+                       
                     </li>
-                    <li class="list-task-item mt-12">
-                        <input type="checkbox" id="task2" class="radio-check success">
-                        <label for="task2" class="content-task">
-                            <div class="title h8 fw-7 text-black-2">Create Wireframe and User Flow</div>
-                        </label>
-                    </li>
-                    <li class="list-task-item mt-12">
-                        <input type="checkbox" id="task3" class="radio-check success">
-                        <label for="task3" class="content-task">
-                            <div class="title h8 fw-7 text-black-2">Project set up & Brief</div>
-                        </label>
-                    </li>
+                     </a>
+                    @empty
+                    <p class="text-center text-black-2 justify-center">No Sub Task Found</p>
+                        
+                    @endforelse
                 </ul>
+              
+               
             </div>
             <a href="create-task.html" class="tf-btn mt-28 primary icon">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9572 0.666748C13.3752 0.666748 14.9998 2.36408 14.9998 4.89008V10.7767C14.9998 13.3027 13.3752 15.0001 10.9572 15.0001H4.70917C2.29117 15.0001 0.666504 13.3027 0.666504 10.7767V4.89008C0.666504 2.36408 2.29117 0.666748 4.70917 0.666748H10.9572ZM10.9572 1.66675H4.70917C2.86117 1.66675 1.6665 2.93141 1.6665 4.89008V10.7767C1.6665 12.7354 2.86117 14.0001 4.70917 14.0001H10.9572C12.8058 14.0001 13.9998 12.7354 13.9998 10.7767V4.89008C13.9998 2.93141 12.8058 1.66675 10.9572 1.66675ZM7.83317 4.88495C8.10917 4.88495 8.33317 5.10895 8.33317 5.38495V7.32675L10.2775 7.32688C10.5535 7.32688 10.7775 7.55088 10.7775 7.82688C10.7775 8.10288 10.5535 8.32688 10.2775 8.32688L8.33317 8.32675V10.2696C8.33317 10.5456 8.10917 10.7696 7.83317 10.7696C7.55717 10.7696 7.33317 10.5456 7.33317 10.2696V8.32675L5.38884 8.32688C5.11217 8.32688 4.88884 8.10288 4.88884 7.82688C4.88884 7.55088 5.11217 7.32688 5.38884 7.32688L7.33317 7.32675V5.38495C7.33317 5.10895 7.55717 4.88495 7.83317 4.88495Z" fill="white"/>
                 </svg>                    
                 Add New Sub Task</a>
-            
         </div>
     </div>
-
+    @push('style')
+    <link rel="stylesheet"type="text/css" href="{{asset('assets/css/nouislider.min.css')}}"/>
+    <link rel="stylesheet" href="{{asset('assets/css/swiper-bundle.min.css')}}">
+    <link rel="stylesheet"type="text/css" href="{{asset('assets/css/styles.css')}}"/>
+    @endpush
+    
+    @push('js')
+    <script type="text/javascript" src="{{asset('assets/js/calendar-custom.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/js/fullcalendar.min.js')}}"></script>
+    @endpush
 
 @endsection
