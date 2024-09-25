@@ -15,7 +15,7 @@ class ProjectController extends Controller
 
     public function __construct()
     {
-        Auth::check()
+        Auth::check();
         $this->user = Auth::user();
 
     }
