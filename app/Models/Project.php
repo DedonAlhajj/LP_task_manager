@@ -10,17 +10,17 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable=['name','details','start_date','end_date','status'];
-   
-   
+
+
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
-    
+
     public function users(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class,'project_users');
     }
-    
+
     public function attach_comments(): MorphMany
     {
         return $this->morphMany(Comment_Attach::class, 'comment_attachable');

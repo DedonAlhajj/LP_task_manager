@@ -10,7 +10,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function fub(){
+    public function index(){
+
 
     }
 }

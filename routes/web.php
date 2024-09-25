@@ -19,9 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('index');
-})->name('index');
+})->name('index');*/
+
+Route::get('/', [\App\Http\Controllers\DashboradController::class, 'index'])->middleware(['auth', 'verified'])->name('index');
 
 
 Route::get('/dashboard', function () {
@@ -37,7 +39,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Admin']], function () {
-        
+
        // Route::resource('projects', TaskController::class);
     });
     Route::group(['middleware' => ['role:Manager']], function () {

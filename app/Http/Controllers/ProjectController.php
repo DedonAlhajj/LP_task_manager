@@ -29,14 +29,15 @@ class ProjectController extends Controller
         if (Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Manager')) {
             $projects = Project::all();
 
-        } 
+        }
         elseif (Auth::user()->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
-            $projects = $this->user->projects;
+            $u = Auth::user();
+            $projects = $u->projects;
 
         }
         dd($projects);
-        return view('projects.index', compact('projects'));
+        return view('index', compact('projects'));
 
 
     }
