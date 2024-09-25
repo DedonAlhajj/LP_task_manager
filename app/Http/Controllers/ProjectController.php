@@ -15,7 +15,9 @@ class ProjectController extends Controller
 
     public function __construct()
     {
+        Auth::check()
         $this->user = Auth::user();
+
     }
 
 
@@ -23,10 +25,10 @@ class ProjectController extends Controller
     {
         $projects = [];
 
-        if (Auth::user()->id->hasRole('Admin') || Auth::user()->id->hasRole('Manager')) {
+        if (Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Manager')) {
             $projects = Project::all();
 
-        } elseif (Auth::user()->id->hasRole('Team Member')) {
+        } elseif (Auth::user()->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
             $projects = $this->user->projects;
 
