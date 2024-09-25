@@ -6,6 +6,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class ProjectController extends Controller
 {
@@ -28,7 +29,8 @@ class ProjectController extends Controller
         if (Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Manager')) {
             $projects = Project::all();
 
-        } elseif (Auth::user()->hasRole('Team Member')) {
+        } 
+        elseif (Auth::user()->hasRole('Team Member')) {
             //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
             $projects = $this->user->projects;
 
