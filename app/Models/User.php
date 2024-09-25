@@ -50,7 +50,7 @@ class User extends Authenticatable
     }
 
     public function projects(){
-        return $this->belongsToMany(Project::class,'project_users');
+        return $this->belongsToMany(Project::class,'project_users')->withPivot('status')->withTimestamps();;
     }
 
 

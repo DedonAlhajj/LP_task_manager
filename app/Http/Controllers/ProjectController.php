@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
 
 class ProjectController extends Controller
@@ -34,7 +36,6 @@ class ProjectController extends Controller
             'details' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|in:pending,in_progress,completed', // مثال على الحالات
         ]);
 
         try {
@@ -45,9 +46,9 @@ class ProjectController extends Controller
                     'details' => $validated['details'],
                     'start_date' => $validated['start_date'],
                     'end_date' => $validated['end_date'],
-                    'status' => $validated['status'],
                     'created_by' => auth()->id(), // المستخدم الحالي كمنشئ المشروع
                 ]);
+
 
                 // إضافة الصلاحية للمستخدم كـ manager
                 $user = auth()->user();
@@ -57,16 +58,17 @@ class ProjectController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('/')->with('success', 'Project created successfully.');
+            return redirect()->back()->with('success', 'Project created successfully.');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('/')->with('error', 'Failed to create project.');
+            return redirect()->back()->with('error', 'Failed to create project.');
         }
     }
 
     public function show($id)
     {
         $project = Project::findOrFail($id);
+        $users = $project->users;
 
         // الحصول على المستخدم الحالي
         $user = auth()->user();
@@ -76,14 +78,13 @@ class ProjectController extends Controller
         $isAssigned = $project->users()->where('user_id', $user->id)->exists();
 
         if ($isCreator || $isAssigned) {
-            return view('projects.show', compact('project'));
+            return view('projects.show', compact('project','users'));
         } else {
             return redirect()->route('404');
         }
 
 
     }
-
 
     public function edit($id)
     {
@@ -108,7 +109,6 @@ class ProjectController extends Controller
             'details' => 'sometimes|required|string',
             'start_date' => 'sometimes|required|date',
             'end_date' => 'sometimes|required|date|after_or_equal:start_date',
-            'status' => 'sometimes|required|in:pending,in_progress,completed',
         ]);
 
         try {
@@ -117,12 +117,89 @@ class ProjectController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('/')->with('success', 'Project updated successfully.');
+            return redirect()->back()->with('success', 'Project updated successfully.');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('/')->with('error', 'Failed to update project.');
+            return redirect()->back()->with('error', 'Failed to update project.');
         }
 
     }
+
+    public function addUser(Request $request, $projectId)
+    {
+
+        $user1 = auth()->user();
+        // التحقق من صحة المدخلات
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        // الحصول على المشروع
+        $project = Project::findOrFail($projectId);
+
+        // التأكد من أن المستخدم الحالي هو المدير
+
+        if ($project->created_by == $user1->id) {
+
+            // الحصول على المستخدم عبر البريد الإلكتروني
+            $user = User::where('email', $request->email)->firstOrFail();
+
+            if (!$user) {
+                session()->flash('error', 'There is no user with this email');
+                return view('projects.show', compact('project'));
+            }
+            // التحقق إذا كان المستخدم مرتبطًا بالفعل بالمشروع
+            if ($project->users()->where('user_id', $user->id)->exists()) {
+
+                session()->flash('success', 'user already exists');
+                return view('projects.show', compact('project'));
+            }
+
+            // إضافة المستخدم إلى المشروع مع تحديد الحالة كـ disapproved
+            $project->users()->attach($user->id, ['status' => 'disapproved']);
+
+            session()->flash('success', 'User added success');
+            return view('projects.show', compact('project'));
+        }
+    }
+
+    public function myProjects()
+    {
+        // الحصول على المستخدم الحالي
+        $user = auth()->user();
+
+        // جلب المشاريع المرتبطة بالمستخدم مع معلومات الجدول الوسيط
+        $projects = $user->projects()->withPivot('status')->get();
+
+        return view('projects.invitations', compact('projects'));
+
+    }
+
+    public function acceptInvitations($projectId)
+    {
+        // الحصول على المستخدم الحالي
+        $user = auth()->user();
+
+        // البحث عن المشروع الذي يرتبط به المستخدم
+        $project = $user->projects()->where('project_id', $projectId)->first();
+
+        // التحقق من وجود المشروع في الجدول الوسيط
+        if (!$project) {
+             return redirect()->back()->with('error', 'error you are not invited.');
+        }
+
+        // التحقق من أن الحالة الحالية هي disapproved
+        if ($project->pivot->status != 'disapproved') {
+            return redirect()->back()->with('error', 'you cant change status.');
+        }
+
+        // تحديث الحالة إلى approved
+        $user->projects()->updateExistingPivot($projectId, ['status' => 'approved']);
+
+        return redirect()->back()->with('success', 'Invitation Accepted.');
+    }
+
+
+
 
 }
