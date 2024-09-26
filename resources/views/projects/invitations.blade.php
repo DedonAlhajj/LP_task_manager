@@ -8,7 +8,7 @@
 
       <div class="overflow-auto app-content">
           <div class="tf-container">
-              
+            <x-dashboard.alert />
               @if(count($projects) > 0)
               <div class="mt-24">
                   <div class="d-flex align-items-center justify-content-between">
@@ -17,9 +17,9 @@
                   </div>
                   <ul class="mt-20">
                     {{-- @dd($projects) --}}
-                    @foreach ($projects as $project )
-                      @if($project->pivot->status  == 'disapproved')
-                        <li>
+                    @forelse ($projects as $project )
+                   
+                        <li id="invitation_{{$project->id}}">
                             <div class="box-noti-task">
                                 <div class="avatar avt-36">
                                     <img src="images/avt/avt8.jpg" alt="avt">
@@ -29,35 +29,41 @@
                                     {{-- <p class="mt-6">{{$$project->pivot->created_at->diffForHumans()}} <span class="dot"> --}}
                                 </div>
                                 {{-- <div class="btn-group " style="left: 0; right:10px"> --}}
-                                <button id="accept-invitation" data-invitation-id={{ $project->id}}  >Accept</button>
+                                <button id="accept-invitation_{{$project->id}}" onclick="acceptInvitation({{$project->id}})" data-invitation-id={{ $project->id}}  >Accept</button>
                                 {{-- </div> --}}
                             </div>
                         </li>
-                       
-                           
-
-                        @endif
-                    @endforeach
+                   
+                        @empty
+                        <div class="box-empty-inbox">
+                            <img src="images/background/empty-task2.jpg" alt="empty-notification">
+                            <div class="mt-40">
+                                <h5 class="text-black-2 text-center">You haven’t any invitations yet.</h5>
+                                <p class="mt-12 text-black-5 text-center px-4 body-2">Let us notify you and show the invitations here for better communication.</p>
+                            </div>
+                        </div>
+                    @endforelse
                    
                   </ul>
               </div>
               @else
               <div class="box-empty-inbox">
-                <img src="images/background/empty-task2.jpg" alt="empty-notification">
-                <div class="mt-40">
-                    <h5 class="text-black-2 text-center">You haven’t any invitations yet.</h5>
-                    <p class="mt-12 text-black-5 text-center px-4 body-2">Let us notify you and show the invitations here for better communication.</p>
+                    <img src="images/background/empty-task2.jpg" alt="empty-notification">
+                    <div class="mt-40">
+                        <h5 class="text-black-2 text-center">You haven’t any invitations yet.</h5>
+                        <p class="mt-12 text-black-5 text-center px-4 body-2">Let us notify you and show the invitations here for better communication.</p>
+                    </div>
                 </div>
-            </div>
             @endif
             
           </div>
       </div>       
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script>
-          $(document).ready(function() {
-              $('#accept-invitation').click(function() {
-                  let project_Id = $(this).data('invitation-id');
+         function acceptInvitation(invitationId) {
+
+            //   $('#accept-invitation').click(function() {
+                  let project_Id =invitationId;
                   $.ajax({
                       url: '{{ route('projects.updateStatus') }}', // Route to handle the accept action
                       type: 'patch',
@@ -68,7 +74,11 @@
                       },
                       success: function(response) {
                           // Handle success - for example, show a success message
-                          alert(response.message);
+                          console.log(response);
+                          $('#invitation_'+project_Id).remove();
+                        $('.alert-success').show();
+                        $('#message').text(response.success)
+
                       },
                       error: function(xhr, status, error) {
                           // Handle error
@@ -76,8 +86,9 @@
                           alert('An error occurred while accepting the invitation.');
                       }
                   });
-              });
-          });
+                }
+            //   });
+        //   });
       </script>
 
 

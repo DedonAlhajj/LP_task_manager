@@ -135,9 +135,7 @@
 
                                             </div>
                                         </div>
-                                        @empty
-                                            <h2>No User assigned to this project</h2>
-                                        @endforelse
+
 
                                     </a>
                                 </div>

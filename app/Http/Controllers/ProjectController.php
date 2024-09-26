@@ -170,7 +170,7 @@ class ProjectController extends Controller
         $user = auth()->user();
 
         // جلب المشاريع المرتبطة بالمستخدم مع معلومات الجدول الوسيط
-        $projects = $user->projects()->withPivot('status',)->get();
+        $projects = $user->projects()->withPivot('status')->wherePivot('status', 'disapproved')->get();
 
 
         return view('projects.invitations', compact('projects'));
@@ -179,6 +179,7 @@ class ProjectController extends Controller
 
     public function acceptInvitations(Request $request)
     {
+        // dd($request);
         // الحصول على المستخدم الحالي
         $user = auth()->user();
         $projectId=$request->projectId;
