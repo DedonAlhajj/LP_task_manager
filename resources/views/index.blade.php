@@ -135,9 +135,9 @@
 
                                             </div>
                                         </div>
-                                        {{-- @empty
+                                        @empty
                                             <h2>No User assigned to this project</h2>
-                                        @endforelse --}}
+                                        @endforelse
 
                                     </a>
                                 </div>

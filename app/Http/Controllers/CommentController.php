@@ -44,7 +44,7 @@ class CommentController extends Controller
         // إنشاء التعليق
         Comment_Attach::create($data);
 
-        return redirect()->back()->with('success', 'تم إضافة التعليق بنجاح');
+        return redirect()->back()->with('success', 'Comment Add successfully');
     }
 
     public function comments()
