@@ -63,10 +63,10 @@ class ChecklistController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('checklists.index', $taskId)->with('success', 'تم إضافة Checklist بنجاح');
+            return redirect()->route('checklists.index', $taskId)->with('success', 'Checklist created');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('checklists.index', $taskId)->with('error', 'فشل إضافة Checklist ');
+            return redirect()->route('checklists.index', $taskId)->with('error', 'Failed created Checklist ');
         }
 
     }
@@ -99,10 +99,10 @@ class ChecklistController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('checklists.index', $taskId)->with('success', 'تم تحديث الـ Checklist بنجاح');
+            return redirect()->route('checklists.index', $taskId)->with('success', 'Checklist updated');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('checklists.index', $taskId)->with('error', 'فشل تحديث الـ Checklist ');
+            return redirect()->route('checklists.index', $taskId)->with('error', 'Failed updated Checklist ');
         }
 
 
@@ -119,10 +119,10 @@ class ChecklistController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('checklists.index', $taskId)->with('success', 'تم حذف الـ Checklist بنجاح');
+            return redirect()->route('checklists.index', $taskId)->with('success', 'Checklist deleted');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('checklists.index', $taskId)->with('error', 'قشل حذف الـ Checklist ');
+            return redirect()->route('checklists.index', $taskId)->with('error', 'Failed delete Checklist ');
         }
 
     }

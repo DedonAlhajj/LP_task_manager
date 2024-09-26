@@ -54,10 +54,10 @@ class TaskController extends Controller
             });
 
             DB::commit();
-            return redirect()->route('projects.show', $request->project_id)->with('success', 'تم إنشاء المهمة بنجاح');
+            return redirect()->route('projects.show', $request->project_id)->with('success', 'Task created successfully');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->route('projects.show', $request->project_id)->with('error', 'فشل إنشاء المهمة');
+            return redirect()->route('projects.show', $request->project_id)->with('error', 'Failed to create task');
         }
 
     }
@@ -139,10 +139,10 @@ class TaskController extends Controller
                 });
 
                 DB::commit();
-                return redirect()->route('tasks.show', $task->id)->with('success', 'تم تحديث المهمة بنجاح');
+                return redirect()->route('tasks.show', $task->id)->with('success', 'Task updated successfully ');
             } catch (\Exception $ex) {
                 DB::rollback();
-                return redirect()->route('tasks.show', $task->id)->with('error', 'قشل تحديث المهمة');
+                return redirect()->route('tasks.show', $task->id)->with('error', 'Failed update task');
             }
 
 
@@ -166,10 +166,10 @@ class TaskController extends Controller
                 });
 
                 DB::commit();
-                return redirect()->route('projects.show', $project->id)->with('success', 'تم حذف المهمة بنجاح');
+                return redirect()->route('projects.show', $project->id)->with('success', 'Task deleted');
             } catch (\Exception $ex) {
                 DB::rollback();
-                return redirect()->route('projects.show', $project->id)->with('success', 'قشل حذف المهمة');
+                return redirect()->route('projects.show', $project->id)->with('success', 'Failed deleted task');
             }
 
         } else {

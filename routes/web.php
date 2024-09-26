@@ -59,6 +59,26 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/projects/{id}/add-user', [ProjectController::class, 'addUser'])->name('projects.addUser');
     Route::resource('projects', ProjectController::class);
+
+    // المسار المخصص لإنشاء مهمة مرتبطة بمشروع
+    Route::get('projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+
+// استثناء دالة create من الـ resource لتجنب التضارب
+    Route::resource('tasks', TaskController::class)->except(['create']);
+
+
+    // مجموعة مسارات الـ Checklists المرتبطة بكل مهمة
+    Route::prefix('tasks/{task}/checklists')->group(function () {
+        Route::get('/', [ChecklistController::class, 'index'])->name('checklists.index');
+        Route::get('/create', [ChecklistController::class, 'create'])->name('checklists.create');
+        Route::post('/', [ChecklistController::class, 'store'])->name('checklists.store');
+        Route::get('/{checklist}/edit', [ChecklistController::class, 'edit'])->name('checklists.edit');
+        Route::put('/{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
+        Route::delete('/{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');
+    });
+
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
 });
 
 
