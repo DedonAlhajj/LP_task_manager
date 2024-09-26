@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-end full" id="notification">
+<div class="offcanvas offcanvas-end full" id="notification" >
   <div class="header fixed-top line-bt">
       <div class="left" data-bs-dismiss="offcanvas">
           <a href="javascript:void(0);" class="icon"><i class="icon-back"></i></a>

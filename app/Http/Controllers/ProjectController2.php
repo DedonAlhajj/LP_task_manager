@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
 
-class ProjectController extends Controller
+class ProjectController2 extends Controller
 {
     protected $user;
     protected $taskRepo;

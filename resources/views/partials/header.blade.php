@@ -1,8 +1,10 @@
 <div class="header-style2 fixed-top line-bt">
+ 
   <div class="left">
     <a href="javascript:void(0);" class="icon back-btn"><i class="icon-back"></i></a>
       <h5>Home</h5>
   </div>
+  <h4> </h4>
   <div class="right">
       <a href="index.html" class="icon">
           <svg width="19" height="20" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
