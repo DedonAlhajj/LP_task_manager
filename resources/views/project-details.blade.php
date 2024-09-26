@@ -39,7 +39,8 @@
                                 <span>No Team</span>
                                 @endif
                                 <li class="add-member">
-                                    <a href="invite-colleagues.html" class="icon icon-add2"></a>
+
+                                    <a href="{{route('projects.team.add', $project->id)}}" class="icon icon-add2"></a>
                                 </li>
                             </ul>
                         </div>

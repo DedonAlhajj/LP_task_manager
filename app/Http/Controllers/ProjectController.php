@@ -126,6 +126,7 @@ class ProjectController extends Controller
 
     public function addUser(Request $request, $projectId)
     {
+        // dd($request->all());
 
         $user1 = auth()->user();
         // التحقق من صحة المدخلات
@@ -143,22 +144,22 @@ class ProjectController extends Controller
             // الحصول على المستخدم عبر البريد الإلكتروني
             $user = User::where('email', $request->email)->firstOrFail();
 
-            if (!$user) {
-                session()->flash('error', 'There is no user with this email');
-                return view('projects.show', compact('project'));
-            }
+            // if (!$user) {
+            //     session()->flash('error', 'There is no user with this email');
+            //     return redirect()->route('projects.addUser', $project->id);
+            // }
             // التحقق إذا كان المستخدم مرتبطًا بالفعل بالمشروع
             if ($project->users()->where('user_id', $user->id)->exists()) {
 
-                session()->flash('success', 'user already exists');
-                return view('projects.show', compact('project'));
+                session()->flash('info', 'user already exists');
+                return redirect()->route('projects.addUser', $project->id);
             }
 
             // إضافة المستخدم إلى المشروع مع تحديد الحالة كـ disapproved
             $project->users()->attach($user->id, ['status' => 'disapproved']);
 
             session()->flash('success', 'User added success');
-            return view('projects.show', compact('project'));
+            return redirect()->route('projects.addUser', $project->id);
         }
     }
 
@@ -198,6 +199,13 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'Invitation Accepted.');
     }
 
+
+    public function add_user_to_project($projectId)
+    {
+        // الحصول على المستخدم الحالي
+        return view('invite-colleagues', compact('projectId'));
+
+    }
 
 
 

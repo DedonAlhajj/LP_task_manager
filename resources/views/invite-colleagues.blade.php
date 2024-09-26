@@ -1,12 +1,14 @@
-@extends('layouts.AuthLayout')
+@extends('layouts.master')
 @section('title', 'Invite Colleagues')
 @section('content')
 
 
+@include('partials.header')
 
-
+   
     <div class="app-content style-2">
         <div class="tf-container">
+            <x-dashboard.alert />
             <div class="dropdown mt-24">
                 <div class="dropdown-toggle drop-select-visibility" data-bs-toggle="dropdown">
                     <span class="icon">
@@ -16,6 +18,7 @@
                             </g>
                         </svg>                              
                     </span>
+                  
                     <div class="title-visibility text-val-form">From contacts</div>
                 </div>
                 <div class="dropdown-menu dropdown-visibility full">
@@ -30,8 +33,11 @@
             </div>
             <div class="mt-24">
                 <h6 class="text-black-2">Contacts Info</h6>
+                <form action="{{ route('projects.addUser', $projectId) }}" method="POST">
+                    @csrf
+
                 <div class="mt-16 box-ip">
-                    <input type="text" placeholder="Add people, emails or group" value="tamimikram2011@gmail.c">
+                    <input type="email" placeholder="Add people, emails or group" name="email" value="{{old('email')}}">
                     <a href="#" class="text-right">Tamim Ikram</a>
                 </div>
             </div>
@@ -64,8 +70,9 @@
             </div>
 
             <div class="footer-fixed button">
-                <a href="select-role.html" class="tf-btn primary">Send Invitation</a>
+                <button type="submit" class="tf-btn primary">Send Invitation</button>
             </div>
+            </form>
         </div>
 
     </div>
