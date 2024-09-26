@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:Team Member']], function () {
         // Routes for Admin
     });
+
+
+
     // لعرض المشاريع المرتبطة بالمستخدم المصادق
     Route::get('/my-projects', [ProjectController::class, 'myProjects'])->name('projects.myProjects');
 
