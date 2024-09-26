@@ -10,4 +10,9 @@ class Checklist extends Model
     use HasFactory;
 
     protected $fillable=['title','task_id','status'];
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class, 'task_id');
+    }
 }

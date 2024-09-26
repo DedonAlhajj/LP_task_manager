@@ -68,9 +68,9 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::findOrFail($id);
-
         // الحصول على المستخدم الحالي
         $user = auth()->user();
+
 
         // التحقق إذا كان المستخدم هو الذي أنشأ المشروع أو أنه من المستخدمين المرتبطين بالمشروع
         $isCreator = $project->created_by == $user->id;
@@ -210,6 +210,9 @@ class ProjectController extends Controller
         return view('invite-colleagues', compact('projectId'));
 
     }
+
+
+
 
 
 

@@ -20,8 +20,12 @@ class Task extends Model
         return $this->morphMany(Comment_Attach::class, 'comment_attachable');
     }
 
-
     public function users(){
         return $this->belongsToMany(User::class);
+    }
+
+    public function checklists()
+    {
+        return $this->hasMany(Checklist::class, 'task_id');
     }
 }

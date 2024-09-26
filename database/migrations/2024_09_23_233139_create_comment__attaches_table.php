@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('comment__attaches', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->nullable();
+            $table->text('body')->nullable();
             $table->string('file_path')->nullable();
             $table->enum('message_type', ['text', 'image','video','audio','file'])->default('text');
             $table->foreignId('user_id');

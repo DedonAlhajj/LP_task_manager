@@ -30,4 +30,29 @@ class Project extends Model
         return $this->morphMany(Comment_Attach::class, 'comm_attach_able');
     }
 
+    private function updateProjectStatus($projectId)
+    {
+        $project = Project::findOrFail($projectId);
+        $tasks = $project->tasks;
+
+        // حالة المهام
+        $allCompleted = $tasks->every(function ($task) {
+            return $task->status == 'Completed';
+        });
+
+        $anyInProgress = $tasks->contains(function ($task) {
+            return $task->status == 'InProgress';
+        });
+
+        if ($allCompleted) {
+            $project->status = 'Completed';
+        } elseif ($anyInProgress) {
+            $project->status = 'InProgress';
+        } else {
+            $project->status = 'New';
+        }
+
+        $project->save();
+    }
+
 }
