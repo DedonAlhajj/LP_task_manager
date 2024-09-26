@@ -106,7 +106,7 @@
                                             </ul>
                                         </div>
                                         <div class="mt-14 box-image">
-                                            <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt=""> 
+                                            <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt="">
                                         </div>
                                         <div class="mt-14 bottom d-flex align-items-center">
                                             @if ($project->user->count()>0)
@@ -114,7 +114,7 @@
                                                 @foreach ($project->users as $user)
                                                 <li class="avt-list">
                                                     <div class="avatar avt-27 round">
-                                                        
+
                                                         <img src="images/avt/avt3.jpg" alt="img">
                                                     </div>
                                                 </li>
@@ -138,7 +138,7 @@
                                         @empty
                                             <h2>No User assigned to this project</h2>
                                         @endforelse
-                                     
+
                                     </a>
                                 </div>
                                 @endforeach
