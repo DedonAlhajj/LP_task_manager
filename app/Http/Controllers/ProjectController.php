@@ -130,7 +130,6 @@ class ProjectController extends Controller
 
     public function addUser(Request $request, $projectId)
     {
-        // dd($request->all());
 
         $user1 = auth()->user();
         // التحقق من صحة المدخلات
@@ -152,14 +151,14 @@ class ProjectController extends Controller
             if ($project->users()->where('user_id', $user->id)->exists()) {
 
                 session()->flash('info', 'user already exists');
-                return redirect()->route('projects.addUser', $project->id);
+                return redirect()->back();
             }
 
             // إضافة المستخدم إلى المشروع مع تحديد الحالة كـ disapproved
             $project->users()->attach($user->id, ['status' => 'disapproved']);
 
             session()->flash('success', 'User added success');
-            return redirect()->route('projects.addUser', $project->id);
+            return redirect()->back();
         }
     }
 

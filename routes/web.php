@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{id}/update-status', [ProjectController::class, 'acceptInvitations'])->name('projects.updateStatus');
     Route::get('/my-projects/invite/{id}', [ProjectController::class, 'add_user_to_project'])->name('projects.team.add');
 
-    Route::post('/projects/{id}/add-user', [ProjectController::class, 'addUser'])->name('projects.addUser');
+    Route::post('projects/{id}/add-user', [ProjectController::class, 'addUser'])->name('projects.addUser');
     Route::resource('projects', ProjectController::class);
 
     // المسار المخصص لإنشاء مهمة مرتبطة بمشروع
