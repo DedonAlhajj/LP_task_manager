@@ -98,12 +98,11 @@ class ProjectController extends Controller
         } else {
             return redirect()->route('404');
         }
-
-
     }
 
     public function edit($id)
     {
+        $projects = [];
 
         $project = Project::findOrFail($id);
         if ($project->created_by ==  auth()->id()){
@@ -229,7 +228,7 @@ class ProjectController extends Controller
 
     }
 
-    
+
 
 
 
