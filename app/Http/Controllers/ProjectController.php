@@ -26,7 +26,22 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
+        $projects = [];
+        $u = Auth::user();
+        // dd($u->hasRole ('Manager'));
+        if ( $u->hasRole('Admin')) {
+            $projects = Project::all();
+        }elseif ( $u->hasRole ('Manager')){
 
+            $projects = $u->tasksCreated;
+        }
+        elseif (Auth::user()->hasRole('Team Member')) {
+            //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
+            $projects = $u->projects;
+
+        }
+        //dd($projects);
+        return view('projects.my-projects-view', compact('projects'));
     }
 
     public function store(Request $request)
@@ -48,8 +63,6 @@ class ProjectController extends Controller
                     'end_date' => $validated['end_date'],
                     'created_by' => auth()->id(), // المستخدم الحالي كمنشئ المشروع
                 ]);
-
-
                 // إضافة الصلاحية للمستخدم كـ manager
                 $user = auth()->user();
                 if (!$user->hasRole('Manager')) {
@@ -215,6 +228,8 @@ class ProjectController extends Controller
         return view('invite-colleagues', compact('projectId'));
 
     }
+
+    
 
 
 

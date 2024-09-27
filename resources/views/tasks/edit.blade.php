@@ -14,9 +14,12 @@
     </div>
     <div class="app-content style-2">
         <div class="tf-container">
+            <x-dashboard.alert />
+            <form method="POST">
+                @csrf
             <div class="mt-24">
                 <h6 class="text-black-2">Task Name</h6>
-                <input type="text" placeholder="Wireframe for NFT Landing Page" class="mt-16">
+                <input type="text" name="name" id="name" value="{{ $task->name }}" class="input-text" placeholder="Enter Task Name">
             </div>
             <div class="mt-20">
                 <h6 class="text-black-2">Timeline</h6>
@@ -28,7 +31,7 @@
                             </div>
                             <div class="content">
                                 <p class="text-caption-2 text-black-5">Start Date</p>
-                                <div class="mt-2 body-4 fw-5 text-black-7 valDate-start">December 25</div>
+                                <div class="mt-2 body-4 fw-5 text-black-7 valDate-start" id="start_date">{{$task->start_date}}</div>
                             </div>
                         </div>
                         <div class="dropdown-menu dropdown-calendar">
@@ -44,7 +47,8 @@
                             </div>
                             <div class="content">
                                 <p class="text-caption-2 text-black-5">Due Date</p>
-                                <div class="mt-2 body-4 fw-5 text-black-7 valDate-due">December 31</div>
+                                {{-- <input type="hidden" name="due_date" id="ene_date" class="due_date" > --}}
+                                <div class="mt-2 body-4 fw-5 text-black-7 valDate-due" id="end_date">{{$task->end_date}}</div>
                             </div>
                         </div>
                         <div class="dropdown-menu dropdown-calendar">
@@ -60,30 +64,27 @@
             <div class="mt-24 list-desc-project-style2">
                 <h6 class="left text-black-2">Description </h6>
                 <div class="right h9 text-black-5">
-                    <input type="text" placeholder="Add task description">
+                    <input type="text" placeholder="Add task description" id="description" name="description" value="{{ $task->description }}">
                 </div>
             </div>
             <div class="mt-20 list-desc-project-style2">
                 <h6 class="left text-black-2">Task Status </h6>
-                <ul class="right d-flex gap-8">
-                    <li>
-                        <a href="javascript:void(0);" class="task-status style-2 type-1">To Do</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="task-status style-2 type-2">Ongoing</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="task-status style-2 type-3">Backlog</a>
-                    </li>
-                </ul>
+                <div class="right h9 text-black-5">
+                    <select name="status" class="right h9 text-black-5" id="status">
+                        <option value="New" class="task-status style-2 type-1"><a href="javascript:void(0);" class="task-status style-2 type-1" @selected($task->status =='New')>New</a>
+                        </option>
+                        <option value="InProgress" class="task-status style-2 type-2"><a href="javascript:void(0);" class="task-status style-2 type-2" @selected($task->status =='InProgress')>InProgress</a></option>
+                        <option value="Completed" class="task-status style-2 type-3"></a><a href="javascript:void(0);" class="task-status style-2 type-3"@selected($task->status =='Completed')>Completed</a></option>
+                    </select>
+                </div>
             </div>
-            <a href="add-tag.html" class="mt-20 d-flex align-items-center gap-8 h9 text-primary">
+            {{-- <a href="add-tag.html" class="mt-20 d-flex align-items-center gap-8 h9 text-primary">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9572 0.666748C13.3752 0.666748 14.9998 2.36408 14.9998 4.89008V10.7767C14.9998 13.3027 13.3752 15.0001 10.9572 15.0001H4.70917C2.29117 15.0001 0.666504 13.3027 0.666504 10.7767V4.89008C0.666504 2.36408 2.29117 0.666748 4.70917 0.666748H10.9572ZM10.9572 1.66675H4.70917C2.86117 1.66675 1.6665 2.93141 1.6665 4.89008V10.7767C1.6665 12.7354 2.86117 14.0001 4.70917 14.0001H10.9572C12.8058 14.0001 13.9998 12.7354 13.9998 10.7767V4.89008C13.9998 2.93141 12.8058 1.66675 10.9572 1.66675ZM7.83317 4.88495C8.10917 4.88495 8.33317 5.10895 8.33317 5.38495V7.32675L10.2775 7.32688C10.5535 7.32688 10.7775 7.55088 10.7775 7.82688C10.7775 8.10288 10.5535 8.32688 10.2775 8.32688L8.33317 8.32675V10.2696C8.33317 10.5456 8.10917 10.7696 7.83317 10.7696C7.55717 10.7696 7.33317 10.5456 7.33317 10.2696V8.32675L5.38884 8.32688C5.11217 8.32688 4.88884 8.10288 4.88884 7.82688C4.88884 7.55088 5.11217 7.32688 5.38884 7.32688L7.33317 7.32675V5.38495C7.33317 5.10895 7.55717 4.88495 7.83317 4.88495Z" fill="#7980FF"/>
                 </svg>
                     
                 Subtask
-            </a>
+            </a> --}}
             <div class="mt-40">
                 <div class="enter-task">
                     <ul class="box-left">
@@ -138,8 +139,7 @@
                             <div class="avatar avt-24 round member type-4">
                                 <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M2.72443 6.5625V0H3.83807V6.5625H2.72443ZM0 3.83807V2.72443H6.5625V3.83807H0Z" fill="white"/>
-                                </svg>
-                                    
+                                </svg>     
                             </div> 
                         </li>
                     </ul>
@@ -147,10 +147,72 @@
             </div>
 
             <div class="footer-fixed button">
-                <a href="project-details.html" class="tf-btn primary">Done</a>
+                <button class="tf-btn primary" id="submit-btn" data-id="{{ $task->id }}"  type="submit">Done</button>
             </div>
+            </form>
         </div>
     </div>
+    @push('style')
+    <link rel="stylesheet"type="text/css" href="{{asset('assets/css/nouislider.min.css')}}"/>
+    <link rel="stylesheet" href="{{asset('assets/css/swiper-bundle.min.css')}}">
+    <link rel="stylesheet"type="text/css" href="{{asset('assets/css/styles.css')}}"/>
+    @endpush
+
+    @push('js')
+    <script type="text/javascript" src="{{asset('assets/js/calendar-custom.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/js/fullcalendar.min.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+  
+
+     <script>
+        $(document).ready(function() {
+            $('#submit-btn').click(function(e) {
+                e.preventDefault();
+                var task_id = $(this).data('id');
+                let url = "{{ route('tasks.update', ':id') }}";
+                url = url.replace(':id', task_id);
+                var newurl="{{route('tasks.show',':id')}}";
+              
+
+                newurl=newurl.replace(':id',task_id)
+                $.ajax({
+                    type: "put",
+                    url: url,
+                    data: 
+                    {
+                        "_token": "{{ csrf_token() }}",
+                        "name": $('#name').val(),
+                        "description": $('#description').val(),
+                        "start_date": $('#start_date').text(),
+                        "end_date": $('#end_date').text(),
+                        "status": $('#status').val(),
+
+    
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            // alert('Task created successfully');
+                            $('.alert-success').show();
+                            $('#message').text(response.success)
+                            // window.location.href =newurl ;
+                        }
+                    },
+                    error: function(response) {
+                        $('#message_error').html('');
+                        var errors = response.responseJSON.errors;
+                        $.each(errors, function(field, messages) {     
+                             $('#message_error').append(`<li>${messages[0]}</li>`);
+                        })   
+                        $('.alert-danger').show();
+                    }
+                  
+                });
+            });
+            });
+    </script>
+         @endpush
 
 @endsection
     

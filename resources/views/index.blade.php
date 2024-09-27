@@ -75,7 +75,7 @@
 
                         <h3>Recent Projects</h3>
                         @if (count($projects) > 0)
-                        <a href="my-project.html" class="font-title-btn text-black-5">View All</a>
+                        <a href="{{route('projects.all')}}" class="font-title-btn text-black-5">View All</a>
                         @endif
                     </div>
                     @if (count($projects) > 0)

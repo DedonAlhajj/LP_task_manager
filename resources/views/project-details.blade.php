@@ -3,8 +3,6 @@
 @section('title', 'Project Details')
 @section('content')
     @include('partials.header')
-
-
     <div class="app-content style-3 pb-32">
         <div class="tf-container">
             <div class="mt-24">
@@ -135,40 +133,80 @@
 
                 <ul class="mt-20">
                     @forelse ($project->tasks as $task)
-                    <a href="{{route('index', $task->id)}}" class="btn-edit-task">
-                    <li class="list-task-item mb-2">
-
-                        <input type="checkbox" id="task_{{$task->id}}" class="radio-check success" checked>
-                        <label for="task_{{$task->id}}" class="content-task">
-                            <div class="title h8 fw-7 text-black-2">{{$task->name}}</div>
-                        </label>
-
-                    </li>
+                    <a href="{{route('tasks.show', $task->id)}}" class="btn-edit-task">
+                        <li class="list-task-item mb-2">
+                            <input type="checkbox" id="task_{{$task->id}}" class="radio-check success" checked disabled>
+                            <label for="task_{{$task->id}}" class="content-task">
+                                <div class="title h8 fw-7 text-black-2 ">{{$task->name}}</div>
+                            </label>
+                        </li>
                      </a>
                     @empty
                     <p class="text-center text-black-2 justify-center">No Sub Task Found</p>
-
                     @endforelse
                 </ul>
-
-
             </div>
-            <a href="create-task.html" class="tf-btn mt-28 primary icon">
+            <a href="{{route('tasks.create', $project->id)}}" class="tf-btn mt-28 primary icon">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9572 0.666748C13.3752 0.666748 14.9998 2.36408 14.9998 4.89008V10.7767C14.9998 13.3027 13.3752 15.0001 10.9572 15.0001H4.70917C2.29117 15.0001 0.666504 13.3027 0.666504 10.7767V4.89008C0.666504 2.36408 2.29117 0.666748 4.70917 0.666748H10.9572ZM10.9572 1.66675H4.70917C2.86117 1.66675 1.6665 2.93141 1.6665 4.89008V10.7767C1.6665 12.7354 2.86117 14.0001 4.70917 14.0001H10.9572C12.8058 14.0001 13.9998 12.7354 13.9998 10.7767V4.89008C13.9998 2.93141 12.8058 1.66675 10.9572 1.66675ZM7.83317 4.88495C8.10917 4.88495 8.33317 5.10895 8.33317 5.38495V7.32675L10.2775 7.32688C10.5535 7.32688 10.7775 7.55088 10.7775 7.82688C10.7775 8.10288 10.5535 8.32688 10.2775 8.32688L8.33317 8.32675V10.2696C8.33317 10.5456 8.10917 10.7696 7.83317 10.7696C7.55717 10.7696 7.33317 10.5456 7.33317 10.2696V8.32675L5.38884 8.32688C5.11217 8.32688 4.88884 8.10288 4.88884 7.82688C4.88884 7.55088 5.11217 7.32688 5.38884 7.32688L7.33317 7.32675V5.38495C7.33317 5.10895 7.55717 4.88495 7.83317 4.88495Z" fill="white"/>
                 </svg>
-                Add New Sub Task</a>
+                Add New Sub Task
+            </a>
+
+            <h5 class="mt-20 text-black-2">Comments</h5>
+            @if($project->attach_comments->count() > 0)
+            <div class="post-comments">
+                <h3 class="comment-title"><span>Post comments</span></h3>
+                <ul class="comments-list m ">
+                    @forelse ($project->attach_comments as $comment)
+                        <li class="mb-4">
+                            <div class="comment-img">
+                                    <img src="@if($comment->user->image) {{asset('storage/uploads/users/images/'. $comment->user->image)}} @else https://via.placeholder.com/150x150" @endif alt="img">
+                            </div>
+                            <div class="comment-desc">
+                                <div class="desc-top">
+                                    <h6>{{$comment->user->name}}</h6>
+                                    <span class="date">{{$comment->created_at->format('d M Y h:m')}}</span>
+                                    <a href="javascript:void(0)" class="reply-link"><i class="lni lni-reply"></i>Reply</a>
+                                </div>
+                                <p>
+                                    {{$comment->body}}
+                                </p>
+                            </div>
+                        </li>
+                    @empty
+                        No comments yet
+                    @endforelse
+                </ul>
+            </div>
+            @endif
+            <div class="box-description-task mt-10">
+                <form action="{{route('comments.store')}}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="comm_attach_able_id" value="{{ $project->id }}">
+                    <input type="hidden" name="comm_attach_able_type" value="App\Models\Project">
+                    <textarea class="form-control" name="body" placeholder="Add a comment" required></textarea>
+                    <div class="mt-20">
+                        <button class="tf-btn" type="submit">Add Comment</button>
+                </form>
+                
+            </div>
+
         </div>
+
+        
     </div>
     @push('style')
     <link rel="stylesheet"type="text/css" href="{{asset('assets/css/nouislider.min.css')}}"/>
     <link rel="stylesheet" href="{{asset('assets/css/swiper-bundle.min.css')}}">
     <link rel="stylesheet"type="text/css" href="{{asset('assets/css/styles.css')}}"/>
     @endpush
-
     @push('js')
     <script type="text/javascript" src="{{asset('assets/js/calendar-custom.js')}}"></script>
     <script type="text/javascript" src="{{asset('assets/js/fullcalendar.min.js')}}"></script>
     @endpush
+
+
+
 
 @endsection

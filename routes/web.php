@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::get('/', function () {
-    return view('index');
-})->name('index');*/
+// Route::get('/my', function () {
+//     return view('tasks.my-task');
+// })->name('tasksssssss');
 
 Route::get('/', [\App\Http\Controllers\DashboradController::class, 'index'])->middleware(['auth', 'verified'])->name('index');
 
@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
 
     // لعرض المشاريع المرتبطة بالمستخدم المصادق
     Route::get('/my-projects', [ProjectController::class, 'myProjects'])->name('projects.myProjects');
+    Route::get('/my-projects/all', [ProjectController::class, 'index'])->name('projects.all');
+
 // لتحديث حالة المشروع إلى approved
     Route::patch('/projects/update-status', [ProjectController::class, 'acceptInvitations'])->name('projects.updateStatus');
     Route::get('/my-projects/invite/{id}', [ProjectController::class, 'add_user_to_project'])->name('projects.team.add');
@@ -63,7 +65,9 @@ Route::middleware('auth')->group(function () {
     // المسار المخصص لإنشاء مهمة مرتبطة بمشروع
     Route::get('projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
 
-// استثناء دالة create من الـ resource لتجنب التضارب
+    Route::post('projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.store');
+
+    // استثناء دالة create من الـ resource لتجنب التضارب
     Route::resource('tasks', TaskController::class)->except(['create']);
 
 

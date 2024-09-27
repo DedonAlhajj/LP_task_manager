@@ -17,11 +17,11 @@ class Task extends Model
     }
     public function attach_comments()
     {
-        return $this->morphMany(Comment_Attach::class, 'comment_attachable');
+        return $this->morphMany(Comment_Attach::class, 'comm_attach_able');
     }
 
     public function users(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class , 'task_users');
     }
 
     public function checklists()

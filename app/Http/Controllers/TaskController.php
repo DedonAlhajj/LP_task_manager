@@ -22,7 +22,6 @@ class TaskController extends Controller
     {
         $project = Project::findOrFail($projectId);
         $user = auth()->user();
-
         $isCreator = $project->created_by == $user->id;
         $isAssigned = $project->users()
             ->where('user_id', $user->id)
@@ -34,12 +33,11 @@ class TaskController extends Controller
         } else {
             return redirect()->route('404');
         }
-
     }
-
-
     public function store(Request $request)
     {
+
+        // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -47,14 +45,14 @@ class TaskController extends Controller
             'end_date' => 'required|date',
             'project_id' => 'required|exists:projects,id', // التحقق من وجود الـ project_id
         ]);
-
         try {
             DB::transaction(function () use ($request) {
                 Task::create($request->all());
             });
 
             DB::commit();
-            return redirect()->route('projects.show', $request->project_id)->with('success', 'Task created successfully');
+            return response()->json(['success' => 'Task created successfully']);
+            // return redirect()->route('projects.show', $request->project_id)->with('success', 'Task created successfully');
         } catch (\Exception $ex) {
             DB::rollback();
             return redirect()->route('projects.show', $request->project_id)->with('error', 'Failed to create task');
@@ -78,7 +76,6 @@ class TaskController extends Controller
             ->wherePivot('status', 'approved')
             ->where('user_id', $user->id)
             ->exists();
-
         if ($project->created_by == $user->id || $isAssigned) {
             return view('tasks.show', compact('task'));
         } else {
@@ -139,15 +136,18 @@ class TaskController extends Controller
                 });
 
                 DB::commit();
-                return redirect()->route('tasks.show', $task->id)->with('success', 'Task updated successfully ');
+                return response()->json(['success' => 'Task updated successfully']);
+                // return redirect()->route('tasks.show', $task->id)->with('success', 'Task updated successfully ');
             } catch (\Exception $ex) {
                 DB::rollback();
-                return redirect()->route('tasks.show', $task->id)->with('error', 'Failed update task');
+                return response()->json(['error' => 'Failed update task']);
+
+                // return redirect()->route('tasks.show', $task->id)->with('error', 'Failed update task');
             }
 
 
         } else {
-            return redirect()->route('404');
+            return abort(404);
         }
     }
 
@@ -164,12 +164,11 @@ class TaskController extends Controller
                 DB::transaction(function () use ($task,$project) {
                     $task->delete();
                 });
-
                 DB::commit();
                 return redirect()->route('projects.show', $project->id)->with('success', 'Task deleted');
             } catch (\Exception $ex) {
                 DB::rollback();
-                return redirect()->route('projects.show', $project->id)->with('success', 'Failed deleted task');
+                return redirect()->route('projects.show', $project->id)->with('error', 'Failed deleted task');
             }
 
         } else {
