@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory,Searchable;
     protected $fillable=['name','project_id',
     'description','end_date','start_date','status'];
 
@@ -27,5 +28,13 @@ class Task extends Model
     public function checklists()
     {
         return $this->hasMany(Checklist::class, 'task_id');
+    }
+    // Define the fields that will be indexed for search
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'status' => $this->status,
+        ];
     }
 }

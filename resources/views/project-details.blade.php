@@ -74,6 +74,20 @@
     </div>
   </div>
     <div class="app-content style-3 pb-32">
+        <div class="section-box-search" style="padding-bottom: 15px;">
+            <div class="tf-container">
+                <div class="search-box style-1">
+                    <form action="{{ URL::current() }}" method="get" class="">
+                        <input type="text" name="text22" style="" class="search-field" placeholder="ابحث عن مهمتك">
+                        <button  class="icon-left icon-search" style="width: 4px;
+    height: 48px;
+    top: 3px;
+    left: 2px;"></button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
         <div class="tf-container">
             <div class="mt-24">
                 <div class="banner-project">
@@ -202,7 +216,7 @@
                 <h5 class="text-black-2">Sub Task ({{$project->tasks->count()}})</h5>
 
                 <ul class="mt-20">
-                    @forelse ($project->tasks as $task)
+                    @forelse ($tasks as $task)
                     <a href="{{route('tasks.show', $task->id)}}" class="btn-edit-task">
                         <li class="list-task-item mb-2">
                             <input type="checkbox" id="task_{{$task->id}}" class="radio-check success" checked disabled>
@@ -320,13 +334,14 @@
                         <div class="mt-20">
                         <div id="preview" class="mb-3"></div>
                         <button class="tf-btn" type="submit">Add Comment</button>
+                    </div>
                 </form>
-                
-            </div>
+
+
 
         </div>
 
-        
+
     </div>
     @push('style')
     <link rel="stylesheet"type="text/css" href="{{asset('assets/css/nouislider.min.css')}}"/>
