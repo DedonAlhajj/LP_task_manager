@@ -231,7 +231,15 @@ class ProjectController extends Controller
 
     
 
-
+    public function destroy($id) 
+    {
+        $user=Auth::user();
+        $project = Project::find($id);
+        if ($project->created_by == $user->id) {
+            $project->delete();
+            return redirect()->route('index')->with('success', 'Project deleted successfully.');
+        }
+    }
 
 
 

@@ -69,10 +69,10 @@ class TaskController extends Controller
                 $task->users()->attach($request->users);
 
                 // إرسال إشعار لكل مستخدم تم تعيينه للمهمة (إذا كنت ترغب في ذلك)
-                foreach ($request->users as $userId) {
-                    $user = User::find($userId);
-                    $user->notify(new TaskAssignedNotification($task)); // إشعار تعيين المهمة
-                }
+                // foreach ($request->users as $userId) {
+                //     $user = User::find($userId);
+                //     $user->notify(new TaskAssignedNotification($task)); // إشعار تعيين المهمة
+                // }
             });
 
             DB::commit();
@@ -80,7 +80,7 @@ class TaskController extends Controller
             // return redirect()->route('projects.show', $request->project_id)->with('success', 'Task created successfully');
         } catch (\Exception $ex) {
             DB::rollback();
-            return response()->json('error', 'Failed to create task');
+            return response()->json(['error'=>$ex->getMessage()]);
         }
 
     }

@@ -69,16 +69,26 @@
             </div>
             <div class="mt-20 list-desc-project-style2">
                 <h6 class="left text-black-2">Assign Users to Task </h6>
-                <div class="right h9 text-black-5">
+                <div class="right h9 text-black-5 form-group mb-4">
 
 
-                    <select name="users[]" class="right h9 text-black-5" id="status" multiple>
+                    {{-- <select name="users[]" class="right h9 text-black-5" id="countries"  multiple>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" class="task-status style-2 type-1">
-                                <a href="javascript:void(0);" class="task-status style-2 type-1">{{ $user->name }}</a>
+                                <option value="{{$user->id}}" @selected(old('users')== $user->id) >{{$user->name}}</option>
                             </option>
                         @endforeach
+                    </select> --}}
+
+                    <select name="users[]" id="countries" class=" mt-4" multiple>
+                        @foreach ($users as $user )
+                            <option value="{{$user->id}}" @selected(old('users')== $user->id) >{{$user->name}}</option>
+                        @endforeach
+                        
                     </select>
+
+
+
                 </div>
             </div>
             <a href="add-tag.html" class="mt-20 d-flex align-items-center gap-8 h9 text-primary">
@@ -162,11 +172,15 @@
     @endpush
 
     @push('js')
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+
     <script type="text/javascript" src="{{asset('assets/js/calendar-custom.js')}}"></script>
     <script type="text/javascript" src="{{asset('assets/js/fullcalendar.min.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
+    <script>
+        new MultiSelectTag('countries')  // id
+      </script>
 
      <script>
         $(document).ready(function() {
@@ -189,7 +203,7 @@
                         "description": $('#description').val(),
                         "start_date": $('#start_date').text(),
                         "end_date": $('#end_date').text(),
-                        "users": $('#status').val(),
+                        "users": $('#countries').val(),
                         "project_id": project_id,
 
                     },

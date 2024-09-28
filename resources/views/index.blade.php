@@ -4,7 +4,6 @@
     @section('content')
 
 
-
     <!-- header profile -->
     <div class="header-profile bg-primary style-1 fixed-top">
             <div class="left">
@@ -153,47 +152,205 @@
                     @endif
 
 
-                </div>
-                {{-- <div class="mt-32">
+                </div> 
+                <?php 
+                    $coutComplete=0;
+                    $coutInprogress=0;
+                    $coutNew=0;
+                ?>
+                <div class="mt-32">
                     <div class="section-title d-flex justify-content-between align-items-center">
-                        <h3>Today Tasks</h3>
-                        <a href="my-task.html" class="font-title-btn text-black-5">View All</a>
-                    </div>
-                    <a href="task-detail-calendar.html" class="mt-20 box-task style-2">
-                        <div class="box-icon w-52 radius-8">
-                            <i class="icon-wallet"></i>
-                        </div>
-                        <div class="content">
-                            <div class="font-title-btn text-black-2">Fintech Project</div>
-                            <div class="mt-10 d-flex align-items-center gap-16">
-                                <ul class="list-stacked">
-                                    <li class="avt-list">
-                                        <div class="avatar avt-24 round">
-                                            <img src="images/avt/avt3.jpg" alt="img">
-                                        </div>
-                                    </li>
-                                    <li class="avt-list">
-                                        <div class="avatar avt-24 round">
-                                            <img src="images/avt/avt4.jpg" alt="img">
-                                        </div>
-                                    </li>
-                                    <li class="avt-list">
-                                        <div class="avatar avt-24 round member">
-                                            3+
-                                        </div>
-                                    </li>
-                                </ul>
-                                <span class="meta-item"><i class="icon-chat2 fs-12"></i> 16</span>
-                            </div>
-                        </div>
-                        <div class="circle_percent" data-percent="85">
-                            <div class="circle_inner">
-                                <div class="round_per"></div>
-                            </div>
-                        </div>
-                    </a>
+                        <h3>Completed Tasks</h3>                       
 
-                </div> --}}
+                        {{-- <a href="my-task.html" class="font-title-btn text-black-5">View All</a> --}}
+                    </div>
+                    @foreach ($projects as $project)
+                            @foreach ($project->tasks as $task)
+                                @if($task->status == 'Completed')
+                                <a href="{{route('tasks.show', $task->id)}}" class="mt-20 box-task style-2">
+                                    <div class="box-icon w-52 radius-8">
+                                        <i class="icon-wallet"></i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="font-title-btn text-black-2">{{$task->name}}</div>
+                                        <div class="mt-10 d-flex align-items-center gap-16">
+                                            <ul class="list-stacked">
+                                                <?php $number=0?>
+                                                @forelse ($task->users as $user)
+                                                <li class="avt-list">
+                                                    <div class="avatar avt-24 round">
+                                                        <img src="{{asset('images/avt/avt6.jpg')}}" alt="img">
+                                                    </div>
+                                                </li>
+                                                <?php $number++?>
+                                                @if($number==2)
+                                                    @break
+                                                @endif
+                                                @empty
+                                                    Not Assigned
+                                                @endforelse
+                                                @if($task->users->count() > 2)
+                                                <li class="avt-list">
+                                                    <div class="avatar avt-24 round member type-1">
+                                                        {{$task->users->count()-2}}+
+                                                    </div> 
+                                                </li>
+                                                @endif
+                                            </ul>
+                                            <span class="meta-item"><i class="icon-chat2 fs-12"></i> {{$task->attach_comments->count()}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="circle_percent" data-percent="85">
+                                        <div class="circle_inner">
+                                            <div class="round_per"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <?php $coutComplate++?>
+                                @endif
+                            @endforeach
+                            @endforeach
+                            @if(!$coutComplete > 0)
+                            <div class="tf-container mb-5">
+                                <div class="box-empty-task">
+                                    <div class="mt-32">
+                                        <h5 class="text-black-2 text-center">No Completed Task <br>
+                                        </h5>
+                                        <p class="body-2 mt-16 text-center text-black-4">You have no completed task yet, keep going!</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
+                    <div class="section-title d-flex justify-content-between align-items-center">
+                        <h3>InProgress Tasks</h3>
+                    </div>
+                    @foreach ($projects as $project)
+                    @foreach ($project->tasks as $task)
+                        @if($task->status == 'InProgress')
+                        <a href="{{route('tasks.show', $task->id)}}" class="mt-20 box-task style-2">
+                            <div class="box-icon w-52 radius-8">
+                                <i class="icon-wallet"></i>
+                            </div>
+                            <div class="content">
+                                <div class="font-title-btn text-black-2">{{$task->name}}</div>
+                                <div class="mt-10 d-flex align-items-center gap-16">
+                                    <ul class="list-stacked">
+                                        <?php $number=0?>
+                                        @forelse ($task->users as $user)
+                                        <li class="avt-list">
+                                            <div class="avatar avt-24 round">
+                                                <img src="{{asset('images/avt/avt6.jpg')}}" alt="img">
+                                            </div>
+                                        </li>
+                                        <?php $number++?>
+                                        @if($number==2)
+                                            @break
+                                        @endif
+                                        @empty
+                                            Not Assigned
+                                        @endforelse
+                                        @if($task->users->count() > 2)
+                                        <li class="avt-list">
+                                            <div class="avatar avt-24 round member type-1">
+                                                {{$task->users->count()-2}}+
+                                            </div> 
+                                        </li>
+                                        @endif
+                                    </ul>
+                                    <span class="meta-item"><i class="icon-chat2 fs-12"></i> {{$task->attach_comments->count()}} </span>
+                                </div>
+                            </div>
+                            <div class="circle_percent" data-percent="85">
+                                <div class="circle_inner">
+                                    <div class="round_per"></div>
+                                </div>
+                            </div>
+                        </a>
+                        <?php $coutInprogress++?>
+                        @endif
+                    @endforeach
+                    @endforeach
+                    @if(!$coutInprogress > 0)
+                        <div class="tf-container mb-5">
+                            <div class="box-empty-task">
+                                <div class="mt-20">
+                                    <h5 class="text-black-2 text-center text-black-4">No Inprogress Tasks <br>
+                                    </h5>
+                                    <p class="body-2 mt-16 text-center text-black-4">You have no Inprogress task yet, keep going!</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="section-title d-flex justify-content-between align-items-center">
+                        <h3>New Tasks</h3>
+
+                    </div>
+                   
+                    @foreach ($projects as $project)
+                    @foreach ($project->tasks as $task)
+                        @if($task->status == 'New')
+                        <a href="{{route('tasks.show', $task->id)}}" class="mt-20 box-task style-2">
+                            <div class="box-icon w-52 radius-8">
+                                <i class="icon-wallet"></i>
+                            </div>
+                            <div class="content">
+                                <div class="font-title-btn text-black-2">{{$task->name}}</div>
+                                <div class="mt-10 d-flex align-items-center gap-16">
+                                    <ul class="list-stacked">
+                                        <?php $number=0?>
+                                        @forelse ($task->users as $user)
+                                        <li class="avt-list">
+                                            <div class="avatar avt-24 round">
+                                                <img src="{{asset('images/avt/avt6.jpg')}}" alt="img">
+                                            </div>
+                                        </li>
+                                        <?php $number++?>
+                                        @if($number==2)
+                                            @break
+                                        @endif
+                                        @empty
+                                            Not Assigned
+                                        @endforelse
+                                        @if($task->users->count() > 2)
+                                        <li class="avt-list">
+                                            <div class="avatar avt-24 round member type-1">
+                                                {{$task->users->count()-2}}+
+                                            </div> 
+                                        </li>
+                                        @endif
+                                    </ul>
+                                    <span class="meta-item"><i class="icon-chat2 fs-12"></i>{{$task->attach_comments->count()}} </span>
+                                </div>
+                            </div>
+                            <div class="circle_percent" data-percent="85">
+                                <div class="circle_inner">
+                                    <div class="round_per"></div>
+                                </div>
+                            </div>
+                        </a>
+                        <?php $coutNew++?>
+                        @endif
+                    @endforeach
+                    @endforeach
+                    @if(!$coutNew > 0)
+                        <div class="tf-container mb-5">
+                            <div class="box-empty-task">
+                                <div class="mt-32">
+                                    <h5 class="text-black-2 text-center">No New Tasks <br>
+                                    </h5>
+                                    <p class="body-2 mt-16 text-center text-black-4">You have no New task yet, keep going!</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+           
+                        
+                 
+
+                </div>
             </div>
         </div>
 

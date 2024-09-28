@@ -34,10 +34,8 @@ class DashboradController extends Controller
         $urgentTasks2 = collect();
 
         $u = Auth::user();
-
         if ($u->hasRole('Admin')) {
             $projects = Project::take(10)->get();
-
             $urgentTasks = Task::where('end_date', '<=', now()->addDays(3)) // استخدام end_date بدلاً من due_date
             ->where('status', '!=', 'Completed')
                 ->take(10) // تحديد عدد النتائج بـ 10 فقط
@@ -46,9 +44,7 @@ class DashboradController extends Controller
 
         }
         if ($u->hasRole('Manager')) {
-
-            $projects1 = $u->tasksCreated()->take(5)->get();
-
+            $projects = $u->tasksCreated()->take(5)->get();
             $urgentTasks1 = Auth::user()->tasksCreated()
                 ->whereHas('tasks', function ($query) {
                     $query->where('end_date', '<=', now()->addDays(3))
@@ -80,7 +76,7 @@ class DashboradController extends Controller
 
 
 
-        return view('dashboard',
+        return view('index',
             compact('projects', 'projects1', 'projects2', 'urgentTasks', 'urgentTasks1', 'urgentTasks2'));
     }
 
