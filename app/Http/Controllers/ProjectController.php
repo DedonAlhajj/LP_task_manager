@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use App\Notifications\UserAddedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use mysql_xdevapi\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 class ProjectController extends Controller
@@ -81,10 +83,16 @@ class ProjectController extends Controller
 
     public function show($id)
     {
+        $request = request();
         $project = Project::findOrFail($id);
-        // الحصول على المستخدم الحالي
         $user = auth()->user();
+        $tasks = collect();
 
+        if ($task22 = $request->query('text22')) {
+            $tasks = Task::search($task22)->where('project_id',$project->id)->get();
+        }else{
+            $tasks = $project->tasks;
+        }
 
         // التحقق إذا كان المستخدم هو الذي أنشأ المشروع أو أنه من المستخدمين المرتبطين بالمشروع
         $isCreator = $project->created_by == $user->id;
@@ -95,7 +103,7 @@ class ProjectController extends Controller
 
         if ($isCreator || $isAssigned) {
             $approvedUsers = $project->users()->wherePivot('status', 'approved')->get();
-            return view('project-details', compact('project','approvedUsers'));
+            return view('project-details', compact('project','approvedUsers','tasks'));
         } else {
             return redirect()->route('404');
         }
