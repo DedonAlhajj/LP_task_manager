@@ -60,11 +60,12 @@
 
         <div class="main-section">
             <div class="sw-box-shadow mt-20">
+                @if ($projects->count() > 0 || $urgentTasks->count() > 0)
                 <div style="    text-align: center;
     font-size: x-large;
     padding: 10px;
     background-color: #5fd788;
-    margin-top: 33px;">Your Data If You Admin</div>
+    margin-top: 33px;">Your Data as You Admin</div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="tf-container">
@@ -72,7 +73,7 @@
                                 <div class="section-title d-flex justify-content-between align-items-center">
                                     <h3>Recent projects </h3>
                                     @if ($projects->count() > 0)
-                                        <a href="my-project.html" class="font-title-btn text-black-5">عرض الكل</a>
+                                        <a href="{{ route('projects.index') }}" class="font-title-btn text-black-5">عرض الكل</a>
                                     @endif
                                 </div>
                                 @if ($projects->count() > 0)
@@ -155,11 +156,13 @@
                         </div>
                     </div>
                 </div>
+                @endif
+                @if ($projects1->count() > 0 || $urgentTasks1->count() > 0)
                 <div style="    text-align: center;
     font-size: x-large;
     padding: 10px;
     background-color: #5fd788;
-    margin-top: 33px;">Your Data If You Manager</div>
+    margin-top: 33px;">Your Data as You Manager</div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="tf-container">
@@ -167,7 +170,7 @@
                                 <div class="section-title d-flex justify-content-between align-items-center">
                                     <h3>Your Projects</h3>
                                     @if ($projects1->count() > 0)
-                                        <a href="my-project.html" class="font-title-btn text-black-5">عرض الكل</a>
+                                        <a href="{{ route('projects.index') }}" class="font-title-btn text-black-5">عرض الكل</a>
                                     @endif
                                 </div>
                                 @if ($projects1->count() > 0)
@@ -250,11 +253,13 @@
                         </div>
                     </div>
                 </div>
+                @endif
+                @if ($projects2->count() > 0 || $urgentTasks2->count() > 0)
                 <div style="    text-align: center;
     font-size: x-large;
     padding: 10px;
     background-color: #5fd788;
-    margin-top: 33px;">Your Data If You TeemMember</div>
+    margin-top: 33px;">Your Data as You TeemMember</div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="tf-container">
@@ -262,7 +267,7 @@
                                 <div class="section-title d-flex justify-content-between align-items-center">
                                     <h3>Project You Work On</h3>
                                     @if ($projects2->count() > 0)
-                                        <a href="my-project.html" class="font-title-btn text-black-5">عرض الكل</a>
+                                        <a href="{{ route('projects.index') }}" class="font-title-btn text-black-5">عرض الكل</a>
                                     @endif
                                 </div>
                                 @if ($projects2->count() > 0)
@@ -345,6 +350,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
 
