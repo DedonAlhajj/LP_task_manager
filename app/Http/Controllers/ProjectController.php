@@ -99,12 +99,11 @@ class ProjectController extends Controller
         } else {
             return redirect()->route('404');
         }
-
-
     }
 
     public function edit($id)
     {
+        $projects = [];
 
         $project = Project::findOrFail($id);
         if ($project->created_by ==  auth()->id()){
@@ -228,17 +227,6 @@ class ProjectController extends Controller
         // الحصول على المستخدم الحالي
         return view('invite-colleagues', compact('projectId'));
 
-    }
-
-
-    public function destroy($id) 
-    {
-        $user=Auth::user();
-        $project = Project::find($id);
-        if ($project->created_by == $user->id) {
-            $project->delete();
-            return redirect()->route('index')->with('success', 'Project deleted successfully.');
-        }
     }
 
     

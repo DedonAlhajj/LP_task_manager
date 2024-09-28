@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Checklist;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\TaskCompletedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -143,6 +145,12 @@ class ChecklistController extends Controller
 
         if ($allCompleted) {
             $task->status = 'Completed';
+
+            // send notification to all users that work on task when task completed
+            foreach ($task->users as $userId) {
+                $user = User::find($userId);
+                $user->notify(new TaskCompletedNotification($task));
+            }
         } elseif ($anyInProgress) {
             $task->status = 'InProgress';
         } else {
@@ -150,6 +158,7 @@ class ChecklistController extends Controller
         }
 
         $task->save();
+
     }
 
 }
