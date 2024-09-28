@@ -69,12 +69,13 @@ class ProjectController extends Controller
                     $user->assignRole('Manager');
                 }
             });
-
             DB::commit();
-            return redirect()->back()->with('success', 'Project created successfully.');
+            return response()->json(['success' => 'Project created successfully.']);
+            // return redirect()->back()->with('success', 'Project created successfully.');
         } catch (\Exception $ex) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Failed to create project.');
+            return response()->json(['error' => 'Failed to create project.'], 500);
+            // return redirect()->back()->with('error', 'Failed to create project.');
         }
     }
 
@@ -227,6 +228,17 @@ class ProjectController extends Controller
         // الحصول على المستخدم الحالي
         return view('invite-colleagues', compact('projectId'));
 
+    }
+
+
+    public function destroy($id) 
+    {
+        $user=Auth::user();
+        $project = Project::find($id);
+        if ($project->created_by == $user->id) {
+            $project->delete();
+            return redirect()->route('index')->with('success', 'Project deleted successfully.');
+        }
     }
 
     

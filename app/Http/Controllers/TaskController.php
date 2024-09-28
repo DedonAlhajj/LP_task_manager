@@ -14,7 +14,9 @@ class TaskController extends Controller
 
     public function index()
     {
-        //
+        $user = auth()->user();
+        $tasks=$user->tasks()->get();
+        return view('tasks.my-task', compact('tasks'));
     }
 
 
@@ -31,7 +33,7 @@ class TaskController extends Controller
         if ($isCreator || $isAssigned) {
             return view('tasks.create', compact('project'));
         } else {
-            return redirect()->route('404');
+            return abort(404);
         }
     }
     public function store(Request $request)
@@ -79,7 +81,7 @@ class TaskController extends Controller
         if ($project->created_by == $user->id || $isAssigned) {
             return view('tasks.show', compact('task'));
         } else {
-            return redirect()->route('404');
+            return abort(404);
         }
     }
 

@@ -58,19 +58,12 @@
                 </div>
             </div>
         </div>
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-success">
-                {{ session('error') }}
-            </div>
-        @endif
+    
         <div class="main-section">
             <div class="tf-container">
+               
                 <div class="pt-30">
+                    <x-dashboard.alert />
                     <div class="section-title d-flex justify-content-between align-items-center">
 
                         <h3>Recent Projects</h3>
