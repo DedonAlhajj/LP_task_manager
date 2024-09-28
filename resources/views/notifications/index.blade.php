@@ -50,10 +50,22 @@
                   </a>
               </li>
               @endforeach
+              
+              <li class="mt-16">
+                  <a href="#" class="box-noti-task">
+                      <div class="avatar avt-36">
+                          <img src="images/avt/avt4.jpg" alt="avt">
+                      </div>
+                      <div class="content">
+                          <div class="title">Zara Yasmin Tasnim <span>mentoined you on</span> Redesign Dashboard Finance</div>
+                          <p class="mt-6">Today at 10:04 AM <span class="dot"></span>Redesign Dashboar...</p>
+                      </div>
+                  </a>
+              </li>
           </ul>
           <div class="mt-24">
               <div class="d-flex align-items-center justify-content-between">
-                  <h6 class="text-black-2">Read</h6>
+                  <h6 class="text-black-2">Yesterday</h6>
                   <a href="javascript:void(0);" class="icon-more fs-20 text-black-5"></a>
               </div>
               <ul class="mt-20">

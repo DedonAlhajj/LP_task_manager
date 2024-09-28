@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\User;
+use App\Notifications\UserAddedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -160,10 +161,6 @@ class ProjectController extends Controller
             // الحصول على المستخدم عبر البريد الإلكتروني
             $user = User::where('email', $request->email)->firstOrFail();
 
-            // if (!$user) {
-            //     session()->flash('error', 'There is no user with this email');
-            //     return redirect()->route('projects.addUser', $project->id);
-            // }
             // التحقق إذا كان المستخدم مرتبطًا بالفعل بالمشروع
             if ($project->users()->where('user_id', $user->id)->exists()) {
                 session()->flash('info', 'user already exists');
@@ -171,6 +168,7 @@ class ProjectController extends Controller
             }
             // إضافة المستخدم إلى المشروع مع تحديد الحالة كـ disapproved
             $project->users()->attach($user->id, ['status' => 'disapproved']);
+            $user->notify(new UserAddedNotification($project));
 
             session()->flash('success', 'User added success');
             return redirect()->back();

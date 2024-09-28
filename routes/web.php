@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChecklistController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -82,6 +83,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::resource('/notifications', NotificationController::class);
+
 
 });
 
