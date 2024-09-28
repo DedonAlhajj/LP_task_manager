@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskAssignedNotification;
+use App\Notifications\TaskUpdatedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,8 @@ class TaskController extends Controller
             return redirect()->route('404');
         }
     }
+
+
     public function store(Request $request)
     {
 
@@ -177,6 +180,12 @@ class TaskController extends Controller
                     foreach ($newUsers as $userId) {
                         $user = User::find($userId);
                         $user->notify(new TaskAssignedNotification($task)); // إشعار تعيين المهمة
+                    }
+
+                    $oldUsers = array_intersect($existingUsers, $request->users);
+                    foreach ($oldUsers as $userId) {
+                        $user = User::find($userId);
+                        $user->notify(new TaskUpdatedNotification($task)); // إشعار تحديث المهمة
                     }
                 });
 
