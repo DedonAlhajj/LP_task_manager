@@ -32,6 +32,7 @@ class DashboradController extends Controller
         $urgentTasks = collect();
         $urgentTasks1 = collect();
         $urgentTasks2 = collect();
+
         $u = Auth::user();
 
         if ($u->hasRole('Admin')) {
