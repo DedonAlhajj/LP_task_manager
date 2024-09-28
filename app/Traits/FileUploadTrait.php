@@ -13,7 +13,7 @@ trait FileUploadTrait
         $fileType = $file->getClientOriginalExtension();
 
         // حفظ الملف في المسار المناسب
-        $path = $file->store('uploads/' . $fileType);
+        $path = $file->store('uploads/' . $fileType ,'public');
 
         return $path;
     }

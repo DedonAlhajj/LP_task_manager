@@ -117,6 +117,7 @@ class TaskController extends Controller
 
         // جلب المشروع المرتبط بالمهمة
         $project = $task->project;
+        $users = $project->users()->wherePivot('status', 'approved')->get();
 
         // التحقق من أن المستخدم لديه الصلاحية (صاحب المشروع أو مستخدم approved)
         $user = auth()->user();
@@ -127,7 +128,7 @@ class TaskController extends Controller
 
         // السماح بالتعديل فقط لصاحب المشروع أو المرتبطين approved
         if ($project->created_by == $user->id || $isAssigned) {
-            return view('tasks.edit', compact('task'));
+            return view('tasks.edit', compact('task','users'));
         } else {
             return redirect()->route('404');
         }
@@ -143,6 +144,7 @@ class TaskController extends Controller
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
+            
             'users' => 'required|array', // التأكد من أن المستخدمين عبارة عن مصفوفة
             'users.*' => 'exists:users,id', // التحقق من وجود المستخدمين في قاعدة البيانات
         ]);
@@ -170,6 +172,7 @@ class TaskController extends Controller
                         'description' => $request->description,
                         'start_date' => $request->start_date,
                         'end_date' => $request->end_date,
+                        'status'=>$request->status,
                     ]);
 
                     // تحديث المستخدمين المرتبطين بالمهمة
@@ -179,16 +182,16 @@ class TaskController extends Controller
                     $newUsers = array_diff($request->users, $existingUsers);
 
                     // إرسال إشعار للمستخدمين الجدد فقط
-                    foreach ($newUsers as $userId) {
-                        $user = User::find($userId);
-                        $user->notify(new TaskAssignedNotification($task)); // إشعار تعيين المهمة
-                    }
+                    // foreach ($newUsers as $userId) {
+                    //     $user = User::find($userId);
+                    //     $user->notify(new TaskAssignedNotification($task)); // إشعار تعيين المهمة
+                    // }
 
-                    $oldUsers = array_intersect($existingUsers, $request->users);
-                    foreach ($oldUsers as $userId) {
-                        $user = User::find($userId);
-                        $user->notify(new TaskUpdatedNotification($task)); // إشعار تحديث المهمة
-                    }
+                    // $oldUsers = array_intersect($existingUsers, $request->users);
+                    // foreach ($oldUsers as $userId) {
+                    //     $user = User::find($userId);
+                    //     $user->notify(new TaskUpdatedNotification($task)); // إشعار تحديث المهمة
+                    // }
                 });
 
                 DB::commit();

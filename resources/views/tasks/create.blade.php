@@ -70,25 +70,11 @@
             <div class="mt-20 list-desc-project-style2">
                 <h6 class="left text-black-2">Assign Users to Task </h6>
                 <div class="right h9 text-black-5 form-group mb-4">
-
-
-                    {{-- <select name="users[]" class="right h9 text-black-5" id="countries"  multiple>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}" class="task-status style-2 type-1">
-                                <option value="{{$user->id}}" @selected(old('users')== $user->id) >{{$user->name}}</option>
-                            </option>
-                        @endforeach
-                    </select> --}}
-
                     <select name="users[]" id="countries" class=" mt-4" multiple>
                         @foreach ($users as $user )
                             <option value="{{$user->id}}" @selected(old('users')== $user->id) >{{$user->name}}</option>
                         @endforeach
-                        
                     </select>
-
-
-
                 </div>
             </div>
             <a href="add-tag.html" class="mt-20 d-flex align-items-center gap-8 h9 text-primary">
@@ -190,8 +176,6 @@
                 let url = "{{ route('tasks.store', ':id') }}";
                 url = url.replace(':id', project_id);
                 var newurl="{{route('projects.show',':id')}}";
-
-
                 newurl=newurl.replace(':id',project_id)
                 $.ajax({
                     type: "POST",
@@ -205,7 +189,6 @@
                         "end_date": $('#end_date').text(),
                         "users": $('#countries').val(),
                         "project_id": project_id,
-
                     },
                     success: function(response) {
                         console.log(response);

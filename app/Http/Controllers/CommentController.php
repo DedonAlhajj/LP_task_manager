@@ -32,18 +32,12 @@ class CommentController extends Controller
 
         // التحقق مما إذا كان هناك ملف مرفق
         if ($request->hasFile('file')) {
-            $data['file_path'] = $this->uploadFile($request->file);
-            $data['body'] = null; // content يصبح null
-            $data['message_type'] = $request->file->getClientOriginalExtension();
-        } else {
-            $data['body'] = $request->body; // حفظ المحتوى
-            $data['file_path'] = null; // file_path يصبح null
             $data['message_type'] = 'text';
-        }
-
+            $data['file_path'] =  $this->uploadFile($request->file) ?? null;
+            $data['body'] = $request->body ?? null; // content يصبح null
+        } 
         // إنشاء التعليق
         Comment_Attach::create($data);
-
         return redirect()->back()->with('success', 'Comment Add successfully');
     }
 

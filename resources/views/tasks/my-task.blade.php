@@ -5,6 +5,15 @@
 @include('partials.header')
     <div class="app-content">
         <div class="tf-container">
+            @if($tasks->isEmpty())
+            <div class="box-empty-inbox">
+                <img src="images/background/empty-task2.jpg" alt="empty-notification">
+                <div class="mt-40">
+                    <h5 class="text-black-2 text-center">You haven’t any Tasks yet.</h5>
+                    <p class="mt-12 text-black-5 text-center px-4 body-2">Let us notify you and show the tasks here for better communication.</p>
+                </div>
+            </div>
+            @else
             <div class="mt-24">
                 <div class="tab-slide wrapper-tab-task">
                     <ul class="nav nav-tabs task-tab" role="tablist" >
@@ -56,8 +65,8 @@
 				
 				</div>
             </div>
+            @endif
         </div>
     </div>
 @include('partials.footer')
-
 @endsection

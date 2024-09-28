@@ -167,12 +167,12 @@
                     @foreach ($projects as $project)
                             @foreach ($project->tasks as $task)
                                 @if($task->status == 'Completed')
-                                <a href="{{route('tasks.show', $task->id)}}" class="mt-20 box-task style-2">
+                                <a href="{{route('tasks.show', $task->id)}}" class="mt-20 box-task style-2 mb-5">
                                     <div class="box-icon w-52 radius-8">
                                         <i class="icon-wallet"></i>
                                     </div>
                                     <div class="content">
-                                        <div class="font-title-btn text-black-2">{{$task->name}}</div>
+                                        <div class="font-title-btn text-black-2">{{$task->name}} -> {{$project->name}}</div>
                                         <div class="mt-10 d-flex align-items-center gap-16">
                                             <ul class="list-stacked">
                                                 <?php $number=0?>
@@ -206,7 +206,7 @@
                                         </div>
                                     </div>
                                 </a>
-                                <?php $coutComplate++?>
+                                <?php $coutComplete++?>
                                 @endif
                             @endforeach
                             @endforeach

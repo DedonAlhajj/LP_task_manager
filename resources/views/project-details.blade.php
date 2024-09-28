@@ -38,23 +38,6 @@
             </span>
             <div class="dropdown-menu dropdown-setting-task">
                 <a class="dropdown-item" href="javascript:void(0);">
-                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5.50016 4.83325H3.00016C2.55814 4.83325 2.13421 5.00885 1.82165 5.32141C1.50909 5.63397 1.3335 6.05789 1.3335 6.49992V13.9999C1.3335 14.4419 1.50909 14.8659 1.82165 15.1784C2.13421 15.491 2.55814 15.6666 3.00016 15.6666H10.5002C10.9422 15.6666 11.3661 15.491 11.6787 15.1784C11.9912 14.8659 12.1668 14.4419 12.1668 13.9999V11.4999" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M5.5 11.5H8L15.0833 4.41669C15.4149 4.08517 15.6011 3.63553 15.6011 3.16669C15.6011 2.69785 15.4149 2.24821 15.0833 1.91669C14.7518 1.58517 14.3022 1.39893 13.8333 1.39893C13.3645 1.39893 12.9149 1.58517 12.5833 1.91669L5.5 9.00003V11.5Z" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M11.3335 3.16675L13.8335 5.66675" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Edit Task 
-                </a>
-                <a class="dropdown-item" href="javascript:void(0);">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g opacity="0.9">
-                        <path d="M15.0003 6.66675H8.33366C7.41318 6.66675 6.66699 7.41294 6.66699 8.33341V15.0001C6.66699 15.9206 7.41318 16.6667 8.33366 16.6667H15.0003C15.9208 16.6667 16.667 15.9206 16.667 15.0001V8.33341C16.667 7.41294 15.9208 6.66675 15.0003 6.66675Z" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M13.3335 6.66659V4.99992C13.3335 4.55789 13.1579 4.13397 12.8453 3.82141C12.5328 3.50885 12.1089 3.33325 11.6668 3.33325H5.00016C4.55814 3.33325 4.13421 3.50885 3.82165 3.82141C3.50909 4.13397 3.3335 4.55789 3.3335 4.99992V11.6666C3.3335 12.1086 3.50909 12.5325 3.82165 12.8451C4.13421 13.1577 4.55814 13.3333 5.00016 13.3333H6.66683" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                        </g>
-                    </svg>
-                    Duplicate task  
-                </a>
-                <a class="dropdown-item" href="javascript:void(0);">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g opacity="0.9">
                         <path d="M8.3335 10.8332C8.69137 11.3117 9.14796 11.7075 9.67229 11.994C10.1966 12.2805 10.7764 12.4508 11.3724 12.4935C11.9683 12.5362 12.5665 12.4502 13.1263 12.2414C13.6861 12.0326 14.1944 11.7058 14.6168 11.2832L17.1168 8.78322C17.8758 7.99738 18.2958 6.94487 18.2863 5.85238C18.2768 4.7599 17.8386 3.71485 17.0661 2.94231C16.2935 2.16978 15.2485 1.73157 14.156 1.72208C13.0635 1.71259 12.011 2.13256 11.2252 2.89156L9.79183 4.31656" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
@@ -72,6 +55,8 @@
                     </svg>
                     Complete subtask
                 </a>
+                @can('delete project')
+              
                 <form action="{{route('projects.destroy' ,  $project->id)}}" method="POST">
                     @csrf
                     @method('delete')
@@ -83,7 +68,7 @@
                         Delete Project
                     </button>
                 </form>
- 
+                @endcan
             </div>
         </div>
     </div>
@@ -256,6 +241,32 @@
                                 </div>
                                 <p>
                                     {{$comment->body}}
+                                    @if($comment->file_path)
+                                        <div class="attachment mb-2">
+                                            @php
+                                                $file = Storage::disk('public')->url($comment->file_path);
+                                                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                                            @endphp
+
+                                            @if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png']))
+                                            {{-- @dd($comment->file_path) --}}
+                                            <a href="{{asset('storage/'.$comment->file_path )}}" target="_blank">
+                                                <img src="{{asset('storage/'.$comment->file_path )}}" alt="Attachment" class="img-fluid" style="max-width: 100px;">
+                                                </a>
+                                            @elseif(in_array(strtolower($extension), ['mp4', 'mov', 'avi']))
+
+                                                <video width="320" height="240" controls>
+                                                    <source src="{{ $file }}" type="video/{{ strtolower($extension) }}">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @else
+                                                <a href="{{asset('storage/'.$comment->file_path )}}" target="_blank" class="btn btn-primary btn-sm">View Attachment</a>
+                                            @endif
+                                        </div>
+                                    @endif
+
+
+
                                 </p>
                             </div>
                         </li>
@@ -265,13 +276,49 @@
                 </ul>
             </div>
             @endif
+            <div class="mt-40">
+                <div class="enter-task">
+                    <ul class="box-left">
+                        <li><a href="#attachment">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 8H15.01" stroke="#31394F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 4H7C5.34315 4 4 5.34315 4 7V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V7C20 5.34315 18.6569 4 17 4Z" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 15L8 11C8.45606 10.5611 8.97339 10.3301 9.5 10.3301C10.0266 10.3301 10.5439 10.5611 11 11L16 16" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 14L15 13C15.4561 12.5611 15.9734 12.3301 16.5 12.3301C17.0266 12.3301 17.5439 12.5611 18 13L20 15" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a></li>
+                        <li><a href="#attachment">
+                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.1665 11.9167C9.56017 12.443 10.0624 12.8785 10.6392 13.1936C11.2159 13.5087 11.8537 13.6961 12.5093 13.743C13.1648 13.79 13.8228 13.6954 14.4386 13.4657C15.0543 13.236 15.6135 12.8765 16.0782 12.4117L18.8282 9.66172C19.6631 8.79729 20.125 7.63953 20.1146 6.43779C20.1042 5.23606 19.6221 4.0865 18.7723 3.23671C17.9226 2.38693 16.773 1.9049 15.5713 1.89446C14.3695 1.88402 13.2118 2.34599 12.3473 3.18088L10.7707 4.74838" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12.8335 10.0834C12.4399 9.55709 11.9376 9.12163 11.3608 8.80652C10.7841 8.4914 10.1463 8.30402 9.49075 8.25707C8.83521 8.21012 8.17723 8.30471 7.56145 8.53441C6.94567 8.76411 6.3865 9.12356 5.92185 9.58838L3.17185 12.3384C2.33696 13.2028 1.87498 14.3606 1.88543 15.5623C1.89587 16.764 2.37789 17.9136 3.22768 18.7634C4.07747 19.6132 5.22703 20.0952 6.42876 20.1056C7.6305 20.1161 8.78826 19.6541 9.65268 18.8192L11.2202 17.2517" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                        </a></li>
+                    
+                        <li><a href="#comment-body">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 20L9 17H7C6.20435 17 5.44129 16.6839 4.87868 16.1213C4.31607 15.5587 4 14.7956 4 14V8C4 7.20435 4.31607 6.44129 4.87868 5.87868C5.44129 5.31607 6.20435 5 7 5H17C17.7956 5 18.5587 5.31607 19.1213 5.87868C19.6839 6.44129 20 7.20435 20 8V14C20 14.7956 19.6839 15.5587 19.1213 16.1213C18.5587 16.6839 17.7956 17 17 17H15L12 20Z" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 9H16" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 13H14" stroke="#31394F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
             <div class="box-description-task mt-10">
                 <form action="{{route('comments.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="comm_attach_able_id" value="{{ $project->id }}">
                     <input type="hidden" name="comm_attach_able_type" value="App\Models\Project">
-                    <textarea class="form-control" name="body" placeholder="Add a comment" required></textarea>
-                    <div class="mt-20">
+                
+
+                        <textarea class="form-control" name="body" id="comment-body"  placeholder="Add a comment" ></textarea>
+                        <div class="mt-20">
+                            <label for="attachment">Attachment (Optional)</label>
+                        <input class="form-control" name="file" id="attachment" placeholder="Add a file"  type="file"></input>
+                        <div class="mt-20">
+                        <div id="preview" class="mb-3"></div>
                         <button class="tf-btn" type="submit">Add Comment</button>
                 </form>
                 
@@ -289,6 +336,11 @@
     @push('js')
     <script type="text/javascript" src="{{asset('assets/js/calendar-custom.js')}}"></script>
     <script type="text/javascript" src="{{asset('assets/js/fullcalendar.min.js')}}"></script>
+
+
+    <script src="{{asset('assets/js/file.js')}}"></script>
+
+
     @endpush
 
 
