@@ -20,10 +20,10 @@ class Comment_AttachFactory extends Factory
         $noteable=[Task::class,Project::class
     ];
         return [
-            
-            'content'=>fake()->paragraph(),
+
+            'body'=>fake()->paragraph(),
              //'file_path'=>fake()->url(),
-             'message_type'=>fake()->randomElement(['text', 'image','video','audio','file']), 
+             'message_type'=>fake()->randomElement(['text', 'image','video','audio','file']),
             'user_id'=>\App\Models\User::factory(),
             'comm_attach_able_id'=>fake()->numberBetween(1, 10),
             'comm_attach_able_type'=>fake()->randomElement($noteable)

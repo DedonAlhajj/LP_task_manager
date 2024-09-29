@@ -47,14 +47,14 @@
                     Edit Task
                 </a>
                 @endcan
-                <a class="dropdown-item" href="javascript:void(0);">
+                <a class="dropdown-item" href="{{route('checklists.create',$task->id)}}">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g opacity="0.9">
                         <path d="M15.0003 6.66675H8.33366C7.41318 6.66675 6.66699 7.41294 6.66699 8.33341V15.0001C6.66699 15.9206 7.41318 16.6667 8.33366 16.6667H15.0003C15.9208 16.6667 16.667 15.9206 16.667 15.0001V8.33341C16.667 7.41294 15.9208 6.66675 15.0003 6.66675Z" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M13.3335 6.66659V4.99992C13.3335 4.55789 13.1579 4.13397 12.8453 3.82141C12.5328 3.50885 12.1089 3.33325 11.6668 3.33325H5.00016C4.55814 3.33325 4.13421 3.50885 3.82165 3.82141C3.50909 4.13397 3.3335 4.55789 3.3335 4.99992V11.6666C3.3335 12.1086 3.50909 12.5325 3.82165 12.8451C4.13421 13.1577 4.55814 13.3333 5.00016 13.3333H6.66683" stroke="#31394F" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
                         </g>
                     </svg>
-                    Duplicate task
+                    Add CheckList
                 </a>
                 <a class="dropdown-item" href="javascript:void(0);">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -210,6 +210,37 @@
                     </li>
 
                 </ul>
+
+
+
+                <div class="mt-28">
+                    <h5 class="text-black-2">Sub Task (CheckList)({{$task->checklists->count()}})</h5>
+
+                    <ul class="mt-20">
+                        @forelse ($task->checklists as $checklist)
+                            <a href="{{route('checklists.show',['task' => $task->id,'checklist' => $checklist->id])}}" class="btn-edit-task">
+                                <li class="list-task-item mb-2">
+                                    <label for="task_{{$checklist->id}}" class="content-task">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <div class="title h8 fw-7 text-black-2 ">{{$checklist->title}}</div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label style="left: 52px;
+    position: relative;" class="task-status type-1">@if($checklist->status == 0)New @else Completed @endif</label>
+                                            </div>
+                                        </div>
+
+                                    </label>
+                                </li>
+                            </a>
+                        @empty
+                            <p class="text-center text-black-2 justify-center">No Sub Task Found</p>
+                        @endforelse
+                    </ul>
+                </div>
+
+
 
                 <h5 class="mt-20 text-black-2">Comments</h5>
 

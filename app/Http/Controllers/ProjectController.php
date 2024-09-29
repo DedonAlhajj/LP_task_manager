@@ -15,37 +15,32 @@ use Spatie\Permission\Traits\HasRoles;
 
 class ProjectController extends Controller
 {
-    protected $user;
-    protected $taskRepo;
 
+
+
+    protected $user;
 
     public function __construct()
     {
-        Auth::check();
-        $this->user = Auth::user();
-
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
+        });
     }
 
 
     public function index(Request $request)
     {
-        $projects = [];
-        $u = Auth::user();
-        // dd($u->hasRole ('Manager'));
-        if ( $u->hasRole('Admin')) {
-            $projects = Project::all();
-        }elseif ( $u->hasRole ('Manager')){
+        $projects = match(true) {
+            $this->user->hasRole('Admin') => Project::all(),
+            $this->user->hasRole('Manager') => $this->user->tasksCreated,
+            $this->user->hasRole('Team Member') => $this->user->projects,
+            default => []
+        };
 
-            $projects = $u->tasksCreated;
-        }
-        elseif (Auth::user()->hasRole('Team Member')) {
-            //عرض المشاريع التي يكون للمستخدم (Auth) مهام موكلة إليه فيها فقط
-            $projects = $u->projects;
-
-        }
-        //dd($projects);
         return view('projects.my-projects-view', compact('projects'));
     }
+
 
     public function store(Request $request)
     {
@@ -57,58 +52,44 @@ class ProjectController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($validated, $request) {
-                // إنشاء المشروع
+            DB::transaction(function () use ($validated) {
                 $project = Project::create([
                     'name' => $validated['name'],
                     'details' => $validated['details'],
                     'start_date' => $validated['start_date'],
                     'end_date' => $validated['end_date'],
-                    'created_by' => auth()->id(), // المستخدم الحالي كمنشئ المشروع
+                    'created_by' => $this->user->id,
                 ]);
-                // إضافة الصلاحية للمستخدم كـ manager
-                $user = auth()->user();
-                if (!$user->hasRole('Manager')) {
-                    $user->assignRole('Manager');
-                }
+
+                // إعطاء المستخدم صلاحية الـ Manager إذا لم تكن لديه
+                $this->user->assignRole('Manager');
             });
-            DB::commit();
+
             return response()->json(['success' => 'Project created successfully.']);
-            // return redirect()->back()->with('success', 'Project created successfully.');
         } catch (\Exception $ex) {
-            DB::rollback();
             return response()->json(['error' => 'Failed to create project.'], 500);
-            // return redirect()->back()->with('error', 'Failed to create project.');
         }
     }
+
 
     public function show($id)
     {
-        $request = request();
         $project = Project::findOrFail($id);
-        $user = auth()->user();
-        $tasks = collect();
+        $tasks = request()->query('text22')
+            ? Task::search(request('text22'))->where('project_id', $project->id)->get()
+            : $project->tasks;
 
-        if ($task22 = $request->query('text22')) {
-            $tasks = Task::search($task22)->where('project_id',$project->id)->get();
-        }else{
-            $tasks = $project->tasks;
-        }
-
-        // التحقق إذا كان المستخدم هو الذي أنشأ المشروع أو أنه من المستخدمين المرتبطين بالمشروع
-        $isCreator = $project->created_by == $user->id;
-        $isAssigned = $project->users()
-            ->where('user_id', $user->id)
-            ->wherePivot('status', 'approved')
-            ->exists();
+        $isCreator = $project->created_by === $this->user->id;
+        $isAssigned = $project->users()->wherePivot('status', 'approved')->where('user_id', $this->user->id)->exists();
 
         if ($isCreator || $isAssigned) {
             $approvedUsers = $project->users()->wherePivot('status', 'approved')->get();
-            return view('project-details', compact('project','approvedUsers','tasks'));
-        } else {
-            return redirect()->route('404');
+            return view('project-details', compact('project', 'approvedUsers', 'tasks'));
         }
+
+        return redirect()->route('404');
     }
+
 
     public function edit($id)
     {
@@ -125,10 +106,8 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        // البحث عن المشروع
         $project = Project::findOrFail($id);
 
-        // التحقق من البيانات المدخلة
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'details' => 'sometimes|required|string',
@@ -137,51 +116,43 @@ class ProjectController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($validated, $request,$project) {
+            DB::transaction(function () use ($project, $validated) {
                 $project->update($validated);
             });
 
-            DB::commit();
             return redirect()->back()->with('success', 'Project updated successfully.');
         } catch (\Exception $ex) {
-            DB::rollback();
             return redirect()->back()->with('error', 'Failed to update project.');
         }
-
     }
+
 
     public function addUser(Request $request, $projectId)
     {
-
-        $user1 = auth()->user();
-        // التحقق من صحة المدخلات
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
-        // الحصول على المشروع
         $project = Project::findOrFail($projectId);
 
-        // التأكد من أن المستخدم الحالي هو المدير
-
-        if ($project->created_by == $user1->id) {
-
-            // الحصول على المستخدم عبر البريد الإلكتروني
-            $user = User::where('email', $request->email)->firstOrFail();
-
-            // التحقق إذا كان المستخدم مرتبطًا بالفعل بالمشروع
-            if ($project->users()->where('user_id', $user->id)->exists()) {
-                session()->flash('info', 'user already exists');
-                return redirect()->back();
-            }
-            // إضافة المستخدم إلى المشروع مع تحديد الحالة كـ disapproved
-            $project->users()->attach($user->id, ['status' => 'disapproved']);
-            $user->notify(new UserAddedNotification($project));
-
-            session()->flash('success', 'User added success');
-            return redirect()->back();
+        // التحقق من أن المستخدم الحالي هو مالك المشروع
+        if ($project->created_by !== $this->user->id) {
+            return redirect()->route('404');
         }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        // منع إضافة نفس المستخدم مرة أخرى
+        if ($project->users()->where('user_id', $user->id)->exists()) {
+            return redirect()->back()->with('info', 'User already exists.');
+        }
+
+        $project->users()->attach($user->id, ['status' => 'disapproved']);
+        $user->notify(new UserAddedNotification($project));
+
+        return redirect()->back()->with('success', 'User added successfully.');
     }
+
 
     public function myProjects()
     {
@@ -235,17 +206,20 @@ class ProjectController extends Controller
 
     }
 
-    
 
-    public function destroy($id) 
+
+    public function destroy($id)
     {
-        $user=Auth::user();
-        $project = Project::find($id);
-        if ($project->created_by == $user->id) {
+        $project = Project::findOrFail($id);
+
+        if ($project->created_by === $this->user->id) {
             $project->delete();
             return redirect()->route('index')->with('success', 'Project deleted successfully.');
         }
+
+        return redirect()->route('404');
     }
+
 
 
 

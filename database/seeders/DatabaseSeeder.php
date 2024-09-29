@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolesAndPermissionsSeeder::class,
+            UserSeeder::class,
+            AssignRolesToUsersSeeder::class,
+
         ]);
         User::factory()->count(10)->create();
         Project::factory()->count(10)->create();

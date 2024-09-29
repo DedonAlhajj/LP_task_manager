@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ChecklistController::class, 'index'])->name('checklists.index');
         Route::get('/create', [ChecklistController::class, 'create'])->name('checklists.create');
         Route::post('/', [ChecklistController::class, 'store'])->name('checklists.store');
+        Route::get('/{checklist}', [ChecklistController::class, 'show'])->name('checklists.show'); // هذا هو الراوت المطلوب
         Route::get('/{checklist}/edit', [ChecklistController::class, 'edit'])->name('checklists.edit');
         Route::put('/{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
         Route::delete('/{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');

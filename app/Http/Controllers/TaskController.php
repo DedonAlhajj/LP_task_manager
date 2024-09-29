@@ -43,6 +43,9 @@ class TaskController extends Controller
     }
 
 
+
+
+
     public function store(Request $request)
     {
 
@@ -91,23 +94,10 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        // جلب المهمة بناءً على الـ id
         $task = Task::findOrFail($id);
+        $this->authorize('view', $task);
 
-        // جلب المشروع المرتبط بالمهمة
-        $project = $task->project;
-
-        // التحقق من أن المستخدم الحالي مرتبط بالمشروع وحالته approved
-        $user = auth()->user();
-        $isAssigned = $project->users()
-            ->wherePivot('status', 'approved')
-            ->where('user_id', $user->id)
-            ->exists();
-        if ($project->created_by == $user->id || $isAssigned) {
-            return view('tasks.show', compact('task'));
-        } else {
-            return abort(404);
-        }
+        return view('tasks.show', compact('task'));
     }
 
 
@@ -142,16 +132,12 @@ class TaskController extends Controller
         ]);
 
         $task = Task::findOrFail($id);
-        $project = $task->project;
 
-        // التحقق من الصلاحية
-        $user = auth()->user();
-        $isAssigned = $project->users()->wherePivot('status', 'approved')->where('user_id', $user->id)->exists();
+        // السماح بالتحديث فقط لصاحب المشروع
+        $this->authorize('edit', $task);
 
-        // السماح بالتحديث فقط لصاحب المشروع أو المرتبطين approved
-        if ($project->created_by == $user->id || $isAssigned) {
 
-            try {
+        try {
                 DB::transaction(function () use ($request, $task) {
 
 
@@ -188,18 +174,14 @@ class TaskController extends Controller
 
                 DB::commit();
                 return response()->json(['success' => 'Task updated successfully']);
-                // return redirect()->route('tasks.show', $task->id)->with('success', 'Task updated successfully ');
             } catch (\Exception $ex) {
                 DB::rollback();
                 return response()->json(['error' => 'Failed update task']);
 
-                // return redirect()->route('tasks.show', $task->id)->with('error', 'Failed update task');
             }
 
 
-        } else {
-            return abort(404);
-        }
+
     }
 
 
@@ -209,7 +191,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $project = $task->project;
 
-        $this->authorize('edit', $task);
+        $this->authorize('delete', $task);
             try {
                 DB::transaction(function () use ($task,$project) {
                     // فصل المستخدمين المرتبطين بالمهمة

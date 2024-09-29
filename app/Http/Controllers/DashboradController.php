@@ -44,7 +44,7 @@ class DashboradController extends Controller
 
         }
         if ($u->hasRole('Manager')) {
-            $projects = $u->tasksCreated()->take(5)->get();
+            $projects1 = $u->tasksCreated()->take(5)->get();
             $urgentTasks1 = Auth::user()->tasksCreated()
                 ->whereHas('tasks', function ($query) {
                     $query->where('end_date', '<=', now()->addDays(3))

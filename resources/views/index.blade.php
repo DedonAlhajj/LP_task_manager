@@ -57,15 +57,15 @@
                 </div>
             </div>
         </div>
-    
+
         <div class="main-section">
             <div class="tf-container">
-               
+
                 <div class="pt-30">
                     <x-dashboard.alert />
                     <div class="section-title d-flex justify-content-between align-items-center">
 
-                        <h3>Recent Projects</h3>
+                        <h3>All Projects(Admin)</h3>
                         @if (count($projects) > 0)
                         <a href="{{route('projects.all')}}" class="font-title-btn text-black-5">View All</a>
                         @endif
@@ -152,15 +152,217 @@
                     @endif
 
 
-                </div> 
-                <?php 
+                </div>
+                <?php
                     $coutComplete=0;
                     $coutInprogress=0;
                     $coutNew=0;
                 ?>
+
+
+
+                <div class="pt-30">
+                    <x-dashboard.alert />
+                    <div class="section-title d-flex justify-content-between align-items-center">
+
+
+                        <h3>Your Projects</h3>
+                        @if (count($projects1) > 0)
+                            <a href="{{route('projects.all')}}" class="font-title-btn text-black-5">View All</a>
+                        @endif
+                    </div>
+                    @if (count($projects1) > 0)
+                        <div class="sw-box-shadow mt-20">
+                            <div class="swiper tf-swiper" data-space-between="20" data-preview="1.3" data-tablet="1.5" data-desktop="2">
+                                <div class="swiper-wrapper">
+                                    @foreach ($projects1 as $project)
+                                        <div class="swiper-slide">
+                                            <a href="{{route('projects.show', $project->id)}}" class="box-recent-project">
+                                                <div class="top">
+                                                    <div class="d-flex justify-content-between align-items-center gap-10">
+                                                        <div class="box-icon w-34">
+                                                            <i class="icon-game fs-18"></i>
+                                                        </div>
+                                                        <div class="h8 fw-bold flex-grow-1">{{$project->name}}</div>
+                                                        <span>
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <g opacity="0.6">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16.334 2C19.723 2 22 4.378 22 7.916V16.084C22 19.622 19.723 22 16.333 22H7.665C4.276 22 2 19.622 2 16.084V7.916C2 4.378 4.276 2 7.665 2H16.334ZM16.334 3.5H7.665C5.135 3.5 3.5 5.233 3.5 7.916V16.084C3.5 18.767 5.135 20.5 7.665 20.5H16.333C18.864 20.5 20.5 18.767 20.5 16.084V7.916C20.5 5.233 18.864 3.5 16.334 3.5ZM15.9482 11.0137C16.5012 11.0137 16.9482 11.4607 16.9482 12.0137C16.9482 12.5667 16.5012 13.0137 15.9482 13.0137C15.3952 13.0137 14.9432 12.5667 14.9432 12.0137C14.9432 11.4607 15.3862 11.0137 15.9382 11.0137H15.9482ZM11.9385 11.0137C12.4915 11.0137 12.9385 11.4607 12.9385 12.0137C12.9385 12.5667 12.4915 13.0137 11.9385 13.0137C11.3855 13.0137 10.9345 12.5667 10.9345 12.0137C10.9345 11.4607 11.3765 11.0137 11.9295 11.0137H11.9385ZM7.9297 11.0137C8.4827 11.0137 8.9297 11.4607 8.9297 12.0137C8.9297 12.5667 8.4827 13.0137 7.9297 13.0137C7.3767 13.0137 6.9247 12.5667 6.9247 12.0137C6.9247 11.4607 7.3677 11.0137 7.9207 11.0137H7.9297Z" fill="#31394F"/>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                                    </div>
+                                                    <ul class="mt-14 d-flex gap-8 meta-list">
+                                                        <li class="meta-item"><i class="icon-calendar fs-12"></i> {{$project->created_at->format('d M Y')}}</li>
+                                                        <li class="meta-item"><i class="icon-chat2 fs-12"></i> {{count($project->attach_comments)}}</li>
+                                                        <li class="meta-item"><i class="icon-link fs-12"></i> {{count($project->tasks)}}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="mt-14 box-image">
+                                                    <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt="">
+                                                </div>
+                                                <div class="mt-14 bottom d-flex align-items-center">
+                                                    @if ($project->user->count()>0)
+                                                        <ul class="list-stacked">
+                                                            @foreach ($project->users as $user)
+                                                                <li class="avt-list">
+                                                                    <div class="avatar avt-27 round">
+
+                                                                        <img src="images/avt/avt3.jpg" alt="img">
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @else
+                                                        <h2 class="text-black-5">No Member</h2>
+
+                                                    @endif
+                                                    <div class="box-progress">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="text-caption-2 text-black-5">@if($project->status == 'Completed') Completed @elseif ($project->status == 'InProgress') Progress @else New @endif</span>
+                                                            <span class="fw-6 text-caption-2">@if($project->status == 'Completed') 100 @else 0 @endif</span>
+                                                        </div>
+                                                        <div class="progress h-5">
+                                                            <div class="progress-bar" role="progressbar" style="width: @if($project->status == 'Completed') 100% @endif" aria-valuenow="25" aria-valuemin="50" aria-valuemax=" 100%"></div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+                                            </a>
+                                        </div>
+                                    @endforeach
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    @else
+                        <div class="tf-container">
+                            <div class="box-empty-task">
+                                <img src="images/background/empty-task1.jpg" alt="img">
+                                <div class="mt-32">
+                                    <h5 class="text-black-2 text-center">Planning Your Project <br>
+                                    </h5>
+                                    <p class="body-2 mt-16 text-center text-black-4">Create Projects to manage and tracking your project easily instantly incredibly</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
+                <?php
+                $coutComplete=0;
+                $coutInprogress=0;
+                $coutNew=0;
+                ?>
+
+                <div class="pt-30">
+                    <x-dashboard.alert />
+                    <div class="section-title d-flex justify-content-between align-items-center">
+
+
+                <h3>Projects You Work On</h3>
+                @if (count($projects2) > 0)
+                    <a href="{{route('projects.all')}}" class="font-title-btn text-black-5">View All</a>
+                @endif
+            </div>
+            @if (count($projects2) > 0)
+                <div class="sw-box-shadow mt-20">
+                    <div class="swiper tf-swiper" data-space-between="20" data-preview="1.3" data-tablet="1.5" data-desktop="2">
+                        <div class="swiper-wrapper">
+                            @foreach ($projects2 as $project)
+                                <div class="swiper-slide">
+                                    <a href="{{route('projects.show', $project->id)}}" class="box-recent-project">
+                                        <div class="top">
+                                            <div class="d-flex justify-content-between align-items-center gap-10">
+                                                <div class="box-icon w-34">
+                                                    <i class="icon-game fs-18"></i>
+                                                </div>
+                                                <div class="h8 fw-bold flex-grow-1">{{$project->name}}</div>
+                                                <span>
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <g opacity="0.6">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16.334 2C19.723 2 22 4.378 22 7.916V16.084C22 19.622 19.723 22 16.333 22H7.665C4.276 22 2 19.622 2 16.084V7.916C2 4.378 4.276 2 7.665 2H16.334ZM16.334 3.5H7.665C5.135 3.5 3.5 5.233 3.5 7.916V16.084C3.5 18.767 5.135 20.5 7.665 20.5H16.333C18.864 20.5 20.5 18.767 20.5 16.084V7.916C20.5 5.233 18.864 3.5 16.334 3.5ZM15.9482 11.0137C16.5012 11.0137 16.9482 11.4607 16.9482 12.0137C16.9482 12.5667 16.5012 13.0137 15.9482 13.0137C15.3952 13.0137 14.9432 12.5667 14.9432 12.0137C14.9432 11.4607 15.3862 11.0137 15.9382 11.0137H15.9482ZM11.9385 11.0137C12.4915 11.0137 12.9385 11.4607 12.9385 12.0137C12.9385 12.5667 12.4915 13.0137 11.9385 13.0137C11.3855 13.0137 10.9345 12.5667 10.9345 12.0137C10.9345 11.4607 11.3765 11.0137 11.9295 11.0137H11.9385ZM7.9297 11.0137C8.4827 11.0137 8.9297 11.4607 8.9297 12.0137C8.9297 12.5667 8.4827 13.0137 7.9297 13.0137C7.3767 13.0137 6.9247 12.5667 6.9247 12.0137C6.9247 11.4607 7.3677 11.0137 7.9207 11.0137H7.9297Z" fill="#31394F"/>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <ul class="mt-14 d-flex gap-8 meta-list">
+                                                <li class="meta-item"><i class="icon-calendar fs-12"></i> {{$project->created_at->format('d M Y')}}</li>
+                                                <li class="meta-item"><i class="icon-chat2 fs-12"></i> {{count($project->attach_comments)}}</li>
+                                                <li class="meta-item"><i class="icon-link fs-12"></i> {{count($project->tasks)}}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="mt-14 box-image">
+                                            <img src=" @if($project->image) {{asset('storage/project_images/'. $project->image)}} @else {{asset('images/project/defult-banner.jpg')}} @endif" alt="">
+                                        </div>
+                                        <div class="mt-14 bottom d-flex align-items-center">
+                                            @if ($project->user->count()>0)
+                                                <ul class="list-stacked">
+                                                    @foreach ($project->users as $user)
+                                                        <li class="avt-list">
+                                                            <div class="avatar avt-27 round">
+
+                                                                <img src="images/avt/avt3.jpg" alt="img">
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <h2 class="text-black-5">No Member</h2>
+
+                                            @endif
+                                            <div class="box-progress">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="text-caption-2 text-black-5">@if($project->status == 'Completed') Completed @elseif ($project->status == 'InProgress') Progress @else New @endif</span>
+                                                    <span class="fw-6 text-caption-2">@if($project->status == 'Completed') 100 @else 0 @endif</span>
+                                                </div>
+                                                <div class="progress h-5">
+                                                    <div class="progress-bar" role="progressbar" style="width: @if($project->status == 'Completed') 100% @endif" aria-valuenow="25" aria-valuemin="50" aria-valuemax=" 100%"></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </a>
+                                </div>
+                            @endforeach
+
+
+                        </div>
+                    </div>
+                </div>
+
+            @else
+                <div class="tf-container">
+                    <div class="box-empty-task">
+                        <img src="images/background/empty-task1.jpg" alt="img">
+                        <div class="mt-32">
+                            <h5 class="text-black-2 text-center">Planning Your Project <br>
+                            </h5>
+                            <p class="body-2 mt-16 text-center text-black-4">Create Projects to manage and tracking your project easily instantly incredibly</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+                </div>
+                <?php
+                $coutComplete=0;
+                $coutInprogress=0;
+                $coutNew=0;
+                ?>
+
+
+
+
                 <div class="mt-32">
                     <div class="section-title d-flex justify-content-between align-items-center">
-                        <h3>Completed Tasks</h3>                       
+                        <h3>Completed Tasks</h3>
 
                         {{-- <a href="my-task.html" class="font-title-btn text-black-5">View All</a> --}}
                     </div>
@@ -193,7 +395,7 @@
                                                 <li class="avt-list">
                                                     <div class="avatar avt-24 round member type-1">
                                                         {{$task->users->count()-2}}+
-                                                    </div> 
+                                                    </div>
                                                 </li>
                                                 @endif
                                             </ul>
@@ -254,7 +456,7 @@
                                         <li class="avt-list">
                                             <div class="avatar avt-24 round member type-1">
                                                 {{$task->users->count()-2}}+
-                                            </div> 
+                                            </div>
                                         </li>
                                         @endif
                                     </ul>
@@ -287,7 +489,7 @@
                         <h3>New Tasks</h3>
 
                     </div>
-                   
+
                     @foreach ($projects as $project)
                     @foreach ($project->tasks as $task)
                         @if($task->status == 'New')
@@ -317,7 +519,7 @@
                                         <li class="avt-list">
                                             <div class="avatar avt-24 round member type-1">
                                                 {{$task->users->count()-2}}+
-                                            </div> 
+                                            </div>
                                         </li>
                                         @endif
                                     </ul>
@@ -346,9 +548,9 @@
                         </div>
                     @endif
 
-           
-                        
-                 
+
+
+
 
                 </div>
             </div>

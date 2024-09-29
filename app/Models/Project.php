@@ -11,7 +11,7 @@ class Project extends Model
 
     protected $fillable=['name','details','created_by','start_date','end_date','status'];
 
-
+    protected $ll = "fdvd" ;
     public function user() {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -30,29 +30,23 @@ class Project extends Model
         return $this->morphMany(Comment_Attach::class, 'comm_attach_able');
     }
 
-    private function updateProjectStatus($projectId)
+    public function updateProjectStatus()
     {
-        $project = Project::findOrFail($projectId);
-        $tasks = $project->tasks;
+        $tasks = $this->tasks;
 
-        // حالة المهام
-        $allCompleted = $tasks->every(function ($task) {
-            return $task->status == 'Completed';
-        });
-
-        $anyInProgress = $tasks->contains(function ($task) {
-            return $task->status == 'InProgress';
-        });
+        // تحقق من حالات المهام
+        $allCompleted = $tasks->every(fn($task) => $task->status === 'Completed');
+        $anyInProgress = $tasks->contains(fn($task) => $task->status === 'InProgress');
 
         if ($allCompleted) {
-            $project->status = 'Completed';
+            $this->status = 'Completed';
         } elseif ($anyInProgress) {
-            $project->status = 'InProgress';
+            $this->status = 'InProgress';
         } else {
-            $project->status = 'New';
+            $this->status = 'New';
         }
 
-        $project->save();
+        $this->save();
     }
 
 }

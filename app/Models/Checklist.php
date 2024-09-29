@@ -15,4 +15,9 @@ class Checklist extends Model
     {
         return $this->belongsTo(Task::class, 'task_id');
     }
+
+    public function attach_comments()
+    {
+        return $this->morphMany(Comment_Attach::class, 'comm_attach_able');
+    }
 }
