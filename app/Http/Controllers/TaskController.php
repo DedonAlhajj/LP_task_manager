@@ -7,12 +7,14 @@ use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskAssignedNotification;
 use App\Notifications\TaskUpdatedNotification;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
+    use AuthorizesRequests;
 
     public function index()
     {
@@ -112,26 +114,16 @@ class TaskController extends Controller
 
     public function edit($id)
     {
-        // جلب المهمة بناءً على الـ id
         $task = Task::findOrFail($id);
+
+        // التحقق من الصلاحية باستخدام الـ Policy
+        $this->authorize('edit', $task);
 
         // جلب المشروع المرتبط بالمهمة
         $project = $task->project;
         $users = $project->users()->wherePivot('status', 'approved')->get();
 
-        // التحقق من أن المستخدم لديه الصلاحية (صاحب المشروع أو مستخدم approved)
-        $user = auth()->user();
-        $isAssigned = $project->users()
-            ->wherePivot('status', 'approved')
-            ->where('user_id', $user->id)
-            ->exists();
-
-        // السماح بالتعديل فقط لصاحب المشروع أو المرتبطين approved
-        if ($project->created_by == $user->id || $isAssigned) {
-            return view('tasks.edit', compact('task','users'));
-        } else {
-            return redirect()->route('404');
-        }
+        return view('tasks.edit', compact('task', 'users'));
     }
 
 
@@ -144,7 +136,7 @@ class TaskController extends Controller
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            
+
             'users' => 'required|array', // التأكد من أن المستخدمين عبارة عن مصفوفة
             'users.*' => 'exists:users,id', // التحقق من وجود المستخدمين في قاعدة البيانات
         ]);
@@ -216,9 +208,8 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
         $project = $task->project;
-        $user = auth()->user();
 
-        if ($project->created_by == $user->id) {
+        $this->authorize('edit', $task);
             try {
                 DB::transaction(function () use ($task,$project) {
                     // فصل المستخدمين المرتبطين بالمهمة
@@ -234,9 +225,6 @@ class TaskController extends Controller
                 return redirect()->route('projects.show', $project->id)->with('error', 'Failed deleted task');
             }
 
-        } else {
-            return redirect()->route('404');
-        }
     }
 
 

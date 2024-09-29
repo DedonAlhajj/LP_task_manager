@@ -39,7 +39,7 @@
           <ul class="mt-20">
               @foreach(auth()->user()->unreadNotifications as $notification)
               <li>
-                  <a href="{{ $notification->data['url'] }}" class="box-noti-task">
+                  <a href="" class="box-noti-task">
                       <div class="avatar avt-36">
                           <img src="images/avt/avt1.jpg" alt="avt">
                       </div>
